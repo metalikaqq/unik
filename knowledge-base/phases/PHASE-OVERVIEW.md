@@ -16,7 +16,7 @@
 
 | ID       | Title                  | Status   | Est. days | Started | Completed | Confidence |
 | -------- | ---------------------- | -------- | --------- | ------- | --------- | ---------- |
-| PHASE-00 | Bootstrap & infra      | proposed | 2         | --      | --        | --         |
+| PHASE-00 | Bootstrap & infra      | completed | 2        | 2026-05-08 | 2026-05-08 | 9          |
 | PHASE-01 | Design system + tokens | proposed | 3         | --      | --        | --         |
 | PHASE-02 | Shell, i18n, routing   | proposed | 3         | --      | --        | --         |
 | PHASE-03 | Home + CFP form        | proposed | 5         | --      | --        | --         |
