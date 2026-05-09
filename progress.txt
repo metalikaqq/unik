@@ -186,3 +186,241 @@
 - Latest-callback ref pattern: store callback in `useRef`, sync it in a
   separate `useEffect([cb])`, and call `ref.current()` from the listener.
   Lets consumers pass inline functions without churning the listener.
+
+### Iteration 4 — US-004: Button + Tag + Rule primitives
+**Date:** 2026-05-09T18:56Z
+**Quality Tier:** 1
+**Health Check:** PASS (32 tests passed pre-work, 0 type/lint errors)
+**Implemented:**
+- `src/components/ui/Button.tsx` — server component (no 'use client'). Type
+  `ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { size?, variant?, ref? }`.
+  React 19 ref-as-prop; no `forwardRef`. Sizes sm|md|lg map to padding + text-*;
+  variants primary|secondary|ghost map to bg-fg/text-bg, bg-bg/text-fg+border-fg,
+  bg-transparent/text-fg respectively (uses `bg-accent`, `text-bg`, `text-fg`,
+  `border-fg` Tailwind utilities generated from --color-* tokens by US-001's
+  @theme inline block). Focus ring is `focus-visible:outline-2
+  focus-visible:outline-solid focus-visible:outline-accent
+  focus-visible:outline-offset-4` (square outline 2 px wide, 4 px gap, accent
+  red — straight from ADR-0002). type defaults to "button" (avoid implicit
+  submit inside forms).
+- `src/components/ui/Tag.tsx` — server component. Pure span; classes
+  `inline-block font-mono uppercase text-xs tracking-wider` consume
+  `--font-mono` (US-002 alias) + `--text-xs` + `--tracking-wider` tokens.
+- `src/components/ui/Rule.tsx` — `'use client'` (Framer Motion required).
+  `RuleProps = { orientation?, drawIn?, durationMs?, className? }`.
+  When `drawIn=false` OR `useReducedMotion()` returns true → renders a static
+  `<div role="separator" aria-orientation>` with `h-px w-full bg-fg`
+  (horizontal) or `w-px h-full bg-fg` (vertical). Otherwise → `<motion.div>`
+  with `initial={{ scaleX: 0 }}` (or scaleY) → `animate={{ scaleX: 1 }}`,
+  `transformOrigin: 'left center'` (or 'center top'), default duration 0.5 s,
+  ease `[0.16, 1, 0.3, 1]` (= `--ease-out-expo`). Defense in depth on top of
+  US-001's @media reduced-motion that already zeroes `--duration-*`.
+**Files changed:**
+- src/components/ui/Button.tsx (new, 47 lines)
+- src/components/ui/Tag.tsx (new, 19 lines)
+- src/components/ui/Rule.tsx (new, 63 lines)
+**Tests:** 32 passed (no new tests for US-004 — AC does not require unit
+  tests for these primitives; US-005/006/007 explicitly do require TDD).
+  Existing 32-test suite still green.
+**Lint / Type:** `pnpm typecheck` clean; `pnpm lint` 0 errors (2 cosmetic
+  warnings on generated `coverage/` HTML — gitignored, unchanged from prior
+  iters).
+**Build:** `pnpm build` succeeded — Turbopack compile 1.31 s, 4 static pages
+  generated; TypeScript phase 1.17 s. Both static pages
+  (`/` and `/_not-found`) prerender clean — Rule's `'use client'` boundary
+  doesn't leak into static generation.
+**Secrets scan:** clean.
+**Commit:** f32d833
+**Learnings:**
+- Tailwind v4's `outline-{solid,dashed,dotted,double,hidden,none}` utilities
+  exist (verified by grep on `node_modules/tailwindcss/dist/lib.js`). Use
+  `outline-solid` explicitly because v4's bare `outline` utility sets
+  `outline-style: solid` only as a side-effect of border-width — being
+  explicit avoids surprise across Tailwind versions and keeps the ADR-0002
+  focus-ring spec greppable.
+- React 19 deprecates `forwardRef`. Use `ref?: React.Ref<T>` directly in the
+  props type and destructure it in the function — that's the canonical 19+
+  pattern. No runtime overhead, no double indirection, plays well with
+  server-component constraints.
+- A primitive that *uses* an interactive prop (e.g. `onClick`) does NOT need
+  `'use client'` itself — the directive only matters at the *boundary* where
+  the consumer attaches a function reference. Button.tsx stays a server
+  component; consumers add `'use client'` if they need handlers. Rule.tsx
+  needs `'use client'` because it *imports* Framer Motion (a client-only
+  package), not because it has interactivity.
+- Framer Motion's `motion.div` accepts the same DOM props as `<div>` plus
+  `initial`/`animate`/`transition`/`style` for motion. `style={{
+  transformOrigin: 'left center' }}` makes scaleX draw from the left edge —
+  combined with the variable-aware `--ease-out-expo` cubic-bezier (replaying
+  the token authority chain) gets the Swiss "drawn line" feel without writing
+  CSS keyframes.
+- Defense-in-depth reduced-motion: short-circuit BOTH at hook level
+  (return static node) AND via @media zeroing of --duration-*. Either alone
+  works; together you get correctness even if a future consumer feeds a raw
+  numeric `transition.duration` (bypassing CSS vars).
+
+### Iteration 5 — US-005: MarqueeText primitive
+**Date:** 2026-05-09T19:03Z
+**Quality Tier:** 1
+**Health Check:** PASS (32 tests pre-work, 0 type/lint errors)
+**Implemented:**
+- `src/components/ui/MarqueeText.tsx` — `'use client'` (consumes
+  useReducedMotion). Props `MarqueeTextProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & { children: ReactNode; copies?: number }`
+  with default copies=3. Outer wrapper: `overflow-hidden whitespace-nowrap`
+  + spread props + className. Inner track: `data-marquee-track` + classes
+  `inline-flex w-max gap-[var(--space-12)]` plus conditional `animate-marquee`
+  via `cn(!reduced && "animate-marquee")`. Renders `copies` copies of
+  children as siblings; first copy is announced, the rest get
+  `aria-hidden={true}` so screen readers don't repeat the text 3×.
+- `src/app/globals.css` updates:
+  - `:root` adds `--duration-marquee: 30s;`
+  - `@theme inline` adds the alias `--duration-marquee: var(--duration-marquee);`
+    AND a new `--animate-marquee: marquee var(--duration-marquee) linear infinite;`
+    token (Tailwind v4 generates the `animate-marquee` utility from
+    `--animate-*` tokens — same mechanism as `--text-*` → text-* utilities).
+  - `@media (prefers-reduced-motion: reduce)` adds `--duration-marquee: 0s;`
+  - `@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }`
+**Files changed:**
+- src/components/ui/MarqueeText.tsx (new, 36 lines)
+- tests/unit/components/ui/MarqueeText.test.tsx (new, 91 lines)
+- src/app/globals.css (modified — +1 token, +1 animation alias, +1 @media line, +9 @keyframes lines)
+**Tests:** 40 passed (8 new MarqueeText tests, 32 prior). TDD: RED first
+  (import fails), GREEN after component implementation. Tests cover:
+  text rendering, default 3 copies, custom copies prop, animation class
+  applied when motion allowed, animation class omitted when reduced,
+  duplicates aria-hidden, overflow-hidden on wrapper, className forwarding.
+**Lint / Type:** `pnpm typecheck` clean; `pnpm lint` 0 errors (2 cosmetic
+  warnings on generated coverage HTML, unchanged from prior iters).
+**Build:** `pnpm build` succeeded — Turbopack compile 2.3 s, TypeScript
+  phase 1.1 s, 4 static pages prerendered. MarqueeText's 'use client'
+  boundary doesn't leak into static generation (the / page doesn't
+  consume it yet — that lands at the showcase route in US-008).
+**Secrets scan:** clean.
+**Commit:** 729022b
+**Learnings:**
+- Tailwind v4's `--animate-*` token in `@theme inline` is the canonical way
+  to register a custom animation utility. `--animate-marquee: marquee var(...)
+  linear infinite` generates `.animate-marquee { animation: ... }` at build
+  time. The `@keyframes marquee` rule must live OUTSIDE the @theme block in
+  globals.css (peer to it). The keyframe NAME inside the value must match
+  the @keyframes identifier.
+- Marquee defense in depth is two-layer because the JS layer (useReducedMotion
+  removing the class) is the user-facing path, but the CSS layer
+  (--duration-marquee → 0s in @media) catches edge cases: hydration mismatch
+  (during the first paint, useReducedMotion's getServerSnapshot returns false,
+  so the class IS applied — but if duration is 0s under @media, no visible
+  motion), or any future consumer who renders without the JS hook.
+- `aria-hidden={i === 0 ? undefined : true}` is the correct typed pattern —
+  React strips the attribute when `undefined` (so the first copy is left
+  un-decorated for AT) and serializes "true" otherwise. Avoid the trap of
+  `aria-hidden={i !== 0}` which would emit `aria-hidden="false"` on the
+  first copy — valid HTML but extra noise that some AT engines parse oddly.
+- Test mock for matchMedia in component-level tests differs from the hook
+  test pattern: components don't need the listener-firing escape hatch
+  (`__fire`) — they just need a stable initial `matches` value, since
+  useReducedMotion reads via getSnapshot. Keeping the mock minimal
+  (matches + addEventListener/removeEventListener as no-op spies) makes
+  the test easier to read.
+- `inline-flex w-max gap-[var(--space-12)]` is the trick for an inline
+  marquee track that's wider than its parent: `w-max` makes the track
+  take exactly the width of its inline-flex content, and `gap` separates
+  the copies. Combined with `whitespace-nowrap` on the outer wrapper, no
+  matter how long children is, the track lays out on one line and
+  translateX(-50%) brings copy 2 to copy 1's start position.
+
+### Iteration 6 — US-006: Accordion compound primitive
+**Date:** 2026-05-09T19:19Z
+**Quality Tier:** 1
+**Health Check:** PASS (40 tests passed pre-work, 0 type/lint errors)
+**Implemented:**
+- `src/components/ui/Accordion.tsx` — `'use client'` (uses useState for
+  open-set state and a keydown handler with focus management). Compound
+  exports: `Accordion`, `AccordionItem`, `AccordionTrigger`,
+  `AccordionContent`.
+- Two React contexts:
+  - `AccordionContext` carries `{ openItems: Set<string>, toggle, singleOpen }`
+    so triggers share state with their parent.
+  - `ItemContext` carries `{ itemId, triggerId, contentId, isOpen }` so
+    `AccordionTrigger` and `AccordionContent` inside one item agree on
+    ARIA wiring.
+- `singleOpen` defaults to `true`. Toggle semantics: open → close on same
+  item; open new item closes others when singleOpen, otherwise leaves
+  others alone.
+- `AccordionItem` uses `useId()` for the trigger/content DOM ids
+  (guarantees uniqueness across multiple Accordion instances even if
+  consumers use identical `itemId` values for state). The `itemId` prop
+  is purely a state-membership key, scoped per Accordion via context.
+- Keyboard navigation handled at the Accordion root via a single
+  `onKeyDown` listener that DOM-walks `[data-accordion-trigger]` to
+  build the trigger order on each keystroke (no ref-array registration
+  ceremony, naturally handles dynamic items). ArrowDown/ArrowUp cycle
+  with wrap; Home/End jump to first/last; preventDefault only on those
+  keys.
+- Enter/Space toggle is intentionally NOT custom-handled — native
+  `<button type="button">` semantics give that for free in real
+  browsers; tests assert the trigger IS a `<button>` instead of
+  simulating jsdom's incomplete keydown→click mapping.
+- Focus ring uses ADR-0002 spec exactly: `focus-visible:outline-solid
+  focus-visible:outline-2 focus-visible:outline-offset-4
+  focus-visible:outline-accent`.
+**Files changed:**
+- src/components/ui/Accordion.tsx (new, 220 lines)
+- tests/unit/components/ui/Accordion.test.tsx (new, 196 lines, 13 cases)
+**Tests:** 53 passed (13 new Accordion + 40 prior). TDD: RED first
+  (import error), GREEN after component implementation. Cases cover:
+  ARIA wiring (aria-expanded/controls/labelledby), click toggle,
+  button semantics, ArrowDown wrap, ArrowUp wrap, Home/End jumps,
+  singleOpen vs multi behavior, region role + hidden, focus-ring
+  classes, ArrowDown ignored when focus is outside triggers,
+  ID isolation across multiple Accordions sharing the same itemId.
+**Coverage on src/lib/ + src/hooks/:** 98.5% stmts / 95.83% branches
+  (unchanged from US-003 — Accordion lives under src/components/ui/
+  which is intentionally outside the coverage `include` glob).
+**Lint / Type:** `pnpm typecheck` clean; `pnpm lint` 0 errors (2
+  cosmetic warnings on `coverage/` HTML, unchanged).
+**Build:** BLOCKED — `next build` failed due to environmental Google
+  Fonts unreachability (HTTP 000 from this env, the next/font fetch
+  for Inter and JetBrains Mono fails). This is a network-blocked run,
+  NOT introduced by US-006 (Accordion code does not touch fonts or
+  layout.tsx). US-006 AC does not require `pnpm build` — only
+  `pnpm vitest run` and `pnpm tsc --noEmit`. Logged as a known env
+  blocker; future iterations on this story-set should retry build
+  when network is restored, OR consider switching to next/font/local
+  with vendored woff2 if the block persists.
+**Secrets scan:** clean.
+**Commit:** 41949ec
+**Learnings:**
+- Compound-component state with React Context is straightforward in
+  React 19. The two-context pattern (one for the Accordion's set
+  state, one for the per-item identity + ARIA ids) keeps
+  responsibilities clean and lets `AccordionTrigger` AND
+  `AccordionContent` independently consume the item context without
+  prop drilling.
+- `useId()` per AccordionItem is the right way to guarantee unique
+  DOM ids when consumers can pass arbitrary `itemId` values (state
+  keys may collide across separate Accordion instances; DOM ids must
+  not). State scoping comes from context; DOM-id uniqueness comes from
+  `useId()`. Keep the two concerns separate.
+- DOM-walk-based keyboard nav (`querySelectorAll('[data-accordion-trigger]')`
+  inside the keydown handler) is much simpler than the ref-array
+  registration patterns Radix uses. The DOM is the source of truth for
+  trigger order; React doesn't need to mirror it. Trade-off: pays a
+  querySelectorAll on every relevant keystroke, which is negligible
+  for typical accordion sizes.
+- jsdom does NOT auto-fire `click` on `<button>` Enter/Space keydown
+  the way real browsers do. Don't fight this — assert that triggers
+  are `<button>` elements (so they get the behavior natively in
+  real browsers) and skip simulating the synthetic click. Testing
+  the platform contract (button semantics) is more durable than
+  simulating jsdom workarounds.
+- TS `noUncheckedIndexedAccess: true` in this repo means
+  `const [a, b] = arr` types `a`/`b` as `T | undefined`. `fireEvent.*`
+  parameters reject undefined. Wrap in a small `getTriggers(): [HE, HE, HE]`
+  helper that asserts length and uses non-null assertions internally
+  for a clean, typed tuple at every call site.
+- Spreading a computed-key object as `{...{ [TRIGGER_ATTR]: "" }}` is
+  a clean way to pass a `data-*` attribute whose name is held in a
+  constant — JSX doesn't accept computed-key attribute names directly.
+  Empty string is the canonical "value-less" data attribute. Could
+  also be done with a literal `data-accordion-trigger=""` and a const
+  reused only in the querySelectorAll selector.

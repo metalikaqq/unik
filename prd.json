@@ -75,7 +75,7 @@
         "pnpm lint passes"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "Phase tasks 1.9, 1.10, 1.11. ADR-0002 forbids border-radius and box-shadow. Build with 'use client' only on Rule when Framer Motion is imported.",
       "securityRelevant": false,
       "e2eRequired": false
@@ -93,7 +93,7 @@
         "pnpm tsc --noEmit passes"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "Phase task 1.12. SPEC open question resolved: CSS-only over Framer Motion for perf and simpler reduced-motion story.",
       "securityRelevant": false,
       "e2eRequired": false
@@ -111,7 +111,7 @@
         "pnpm tsc --noEmit passes"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Phase task 1.13. SPEC open question resolved: single-open default per ADR-0002 discipline.",
       "securityRelevant": false,
       "e2eRequired": false
