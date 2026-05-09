@@ -1,0 +1,37 @@
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "storyId": "US-001",
+      "tier": 1,
+      "testsRun": 2,
+      "testsPassed": 2,
+      "coverage": null,
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "SKIPPED_FIRST_ITER",
+      "timestamp": "2026-05-09T18:34:00Z"
+    },
+    {
+      "iteration": 2,
+      "storyId": "US-002",
+      "tier": 1,
+      "testsRun": 2,
+      "testsPassed": 2,
+      "coverage": null,
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "timestamp": "2026-05-09T18:40:00Z"
+    }
+  ],
+  "summary": {
+    "storiesComplete": 2,
+    "storiesTotal": 8,
+    "avgCoverage": null,
+    "regressionsFound": 0,
+    "qualityScore": null
+  }
+}

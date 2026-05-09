@@ -1,0 +1,120 @@
+# Ralph Progress Log
+
+## Codebase Patterns
+
+- **Tailwind v4 CSS-first (ADR-0005)**: Tokens live in `src/app/globals.css`.
+  Pattern is `:root { --color-bg: #FAFAF7; ... }` + `@theme inline { --color-bg: var(--color-bg); ... }`.
+  The `inline` modifier keeps the `var()` reference in generated CSS so :root stays the
+  runtime authority — enabling reduced-motion overrides and future theming. NO
+  `tailwind.config.ts`.
+- **Reduced-motion via tokens**: `@media (prefers-reduced-motion: reduce) :root { --duration-*: 0ms }`
+  zeroes every motion duration at the root, so any primitive consuming `--duration-*`
+  (CSS keyframes or Framer Motion via CSS vars) auto-respects the preference without
+  per-component logic.
+- **Swiss discipline (ADR-0002)**: NO `--radius` or `--shadow` tokens — square corners,
+  hairline rules only. Single accent color (#E63946 Carpathian red); B/W otherwise.
+- **next/font + Tailwind v4 namespacing**: next/font's `variable: '--foo'` option sets
+  `--foo` on `<html>` via the className applied in `layout.tsx`. To expose it as a
+  design-system token name AND avoid an `@theme inline` self-reference cycle, namespace
+  the next/font slot (`--font-inter`, `--font-jetbrains-mono`) and alias to the public
+  token name (`--font-display`, `--font-mono`) at `:root`. Self-referential aliases like
+  `@theme inline { --font-display: var(--font-display) }` would resolve to the initial
+  value because :root and the next/font className live at the same element scope.
+- **Inter "Display" via opsz**: SPEC says "Inter Display"; Google Fonts only exposes
+  `Inter` as a single variable family. Pass `axes: ['opsz']` to `Inter()` from
+  `next/font/google` and set `font-optical-sizing: auto` on body — the browser
+  auto-picks the Display optical-size variant for large headings. One variable file
+  ships, covering the full 100..900 weight axis. Leaner than per-weight static files.
+
+---
+
+## Iteration Log
+
+### Iteration 1 — US-001: Design tokens + Tailwind v4 @theme + reduced-motion
+**Date:** 2026-05-09T18:34Z
+**Quality Tier:** 1
+**Implemented:**
+- Replaced `src/app/globals.css` with full token system on `:root` (color, type
+  scale, space scale, motion durations + easings, z-index layers).
+- Added Tailwind v4 `@theme inline` aliases for color / text / leading / tracking /
+  duration / ease / z-index namespaces.
+- Added `@media (prefers-reduced-motion: reduce)` rule that zeroes all
+  `--duration-*` tokens at `:root`.
+- Body now consumes `--color-bg` / `--color-fg` (no hardcoded values).
+- No `--radius` / `--shadow` tokens defined (Swiss discipline per ADR-0002).
+**Files changed:**
+- `src/app/globals.css` (+129 / -12)
+**Tests:** 2 passed (sanity tests from PHASE-00); no new tests for this story
+  (token-only change, no testable JS behavior). US-003 onward will add unit
+  tests for the lib/ + hooks/ surface.
+**Build:** `pnpm build` succeeded — Turbopack compile 1.86 s, 4 static pages
+  generated.
+**Lint / Type:** `pnpm lint` clean; `pnpm typecheck` clean.
+**Learnings:**
+- Tailwind v4 generates utilities directly from `@theme` namespaces:
+  `--color-X` → `bg-X`/`text-X`/`border-X`, `--text-X` → `text-X` (font-size),
+  `--duration-X` → `duration-X`, `--ease-X` → `ease-X`, `--z-X` → `z-X`,
+  `--leading-X` → `leading-X`, `--tracking-X` → `tracking-X`.
+- The legacy create-next-app `bg-foreground` / `bg-background` Tailwind classes
+  in `src/app/page.tsx` are now unbacked utilities; Tailwind v4 silently emits
+  no rule (no build error). page.tsx is template scaffolding to be replaced in
+  P3 — leaving it alone is intentional for US-001 scope.
+- `pnpm tsc --noEmit` and `pnpm lint` are wired via `package.json` scripts
+  (`typecheck` and `lint`); use those instead of bare binaries.
+- Git in this worktree has no committer identity configured — use
+  `git -c user.email=... -c user.name=... commit ...` per commit (or set local
+  config) to avoid the "Author identity unknown" failure.
+- Next.js 16 builds via Turbopack by default. AGENTS.md warning about API drift
+  did not bite for this CSS-only story; defer per-feature doc-checks (e.g.,
+  next/font, app router primitives) to the iterations that touch those APIs.
+
+### Iteration 2 — US-002: next/font Inter Display + JetBrains Mono with Cyrillic
+**Date:** 2026-05-09T18:40Z
+**Quality Tier:** 1
+**Health Check:** PASS (2 tests passed, 0 type errors, 0 lint errors)
+**Implemented:**
+- Replaced create-next-app's `Geist` / `Geist_Mono` imports with `Inter`
+  (variable, `axes: ['opsz']` to enable the Display optical-size variant) and
+  `JetBrains_Mono` (variable). Both fonts have `subsets: ['latin', 'cyrillic']`
+  and `display: 'swap'`.
+- Namespaced next/font outputs as `--font-inter` and `--font-jetbrains-mono`
+  on `<html>` via `interDisplay.variable` / `jetbrainsMono.variable` classNames
+  in `layout.tsx`.
+- Added design-system aliases at `:root` in `globals.css`: `--font-display:
+  var(--font-inter)` and `--font-mono: var(--font-jetbrains-mono)` so primitives
+  built in US-004+ consume tokens, never raw next/font slot names.
+- Body now uses `font-family: var(--font-display)` + `font-optical-sizing: auto`,
+  which engages Inter's `opsz` axis at large font-sizes (the "Display" variant).
+**Files changed:**
+- `src/app/layout.tsx` (+25 / -8)
+- `src/app/globals.css` (+12 / -0)
+**Tests:** 2 passed (existing PHASE-00 sanity tests); no new tests for this
+  story (font loading is verified by `pnpm build` succeeding without subset
+  warnings). US-003 onward adds vitest coverage on `lib/` + `hooks/`.
+**Build:** `pnpm build` succeeded — Turbopack compile 3.3 s, 4 static pages
+  generated, no font subset warnings. Inter and JetBrains Mono CSS embedded.
+**Lint / Type:** `pnpm lint` clean; `pnpm typecheck` clean.
+**Secrets scan:** clean.
+**Commit:** 118d902
+**Learnings:**
+- `next/font/google` exports `Inter` (variable, `opsz` 14-32 + `wght` 100-900,
+  cyrillic subset available) and `JetBrains_Mono` (variable, `wght` 100-800,
+  cyrillic subset available). Confirmed via
+  `node_modules/next/dist/compiled/@next/font/dist/google/font-data.json`.
+- Google Fonts does NOT host a separate "Inter Display" family. The display
+  optical-size is part of the `Inter` variable's `opsz` axis; passing
+  `axes: ['opsz']` and `font-optical-sizing: auto` is the canonical way to get
+  the Display variant.
+- AGENTS.md Next-16 drift warning: `next/font` API in Next 16.2.5 (Turbopack)
+  is unchanged from 14.x — `axes`, `subsets`, `display`, `variable`, `weight`
+  options all behave as documented. Verified against
+  `node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md`.
+- `--font-display` and `--font-mono` MUST be alias names (not the raw next/font
+  variable names) because Tailwind v4's `@theme inline { --foo: var(--foo) }`
+  pattern would self-reference at the same element scope (`:root` ≡ `<html>`)
+  as next/font's className-scoped variable, leading to an unresolvable
+  `var()` cycle. Namespace next/font with one name, alias to the public token
+  name at `:root` in globals.css, and only the alias goes into `@theme inline`.
+- Variable Google Fonts ship one file covering the entire weight axis. The PRD
+  AC about "only weights actually used" resolves to: variable font is the
+  leanest option (one file, full axis) — preferable to listing static weights.

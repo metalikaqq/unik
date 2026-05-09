@@ -1,0 +1,161 @@
+{
+  "project": "Unik",
+  "branchName": "ralph/phase-01-design-system",
+  "description": "Phase 01 — Swiss-rigorous design system: tokens, fonts, hooks, UI primitives, and /dev/components showcase with axe-clean E2E baseline.",
+  "phase": "PHASE-01",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Design tokens + Tailwind v4 @theme + reduced-motion",
+      "description": "As a developer, I want a single source of truth for color, type, space, motion, and z-index tokens declared as CSS variables on :root and aliased via Tailwind v4 @theme inline so that no component ever hardcodes a visual value.",
+      "acceptanceCriteria": [
+        "src/app/globals.css declares all design tokens on :root: --color-bg (#FAFAF7), --color-fg (#0A0A0A), --color-accent (#E63946), --color-muted (#6B6B6B), type scale, space scale, --duration-* motion vars, and z-index layers per ADR-0002",
+        "Tailwind v4 @theme inline { ... } block aliases the CSS vars to Tailwind utilities",
+        "@media (prefers-reduced-motion: reduce) rule zeroes all --duration-* tokens",
+        "No --radius or --shadow tokens are defined (Swiss discipline — square corners, hairline rules only)",
+        "pnpm tsc --noEmit passes",
+        "pnpm lint passes",
+        "pnpm build succeeds"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "See ADR-0002 (Swiss-rigorous brutalist visual system) and ADR-0005 (Tailwind v4 CSS-first). Phase tasks 1.1, 1.2, 1.3.",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-002",
+      "title": "Font loading via next/font (Inter Display + JetBrains Mono with Cyrillic)",
+      "description": "As a Ukrainian-speaking visitor, I want Inter Display and JetBrains Mono to load with Latin and Cyrillic subsets via next/font so that all UA text renders in the intended typography with no FOUT and no licensing risk.",
+      "acceptanceCriteria": [
+        "src/app/layout.tsx imports both fonts via next/font/google with subsets: ['latin', 'cyrillic']",
+        "display: 'swap' configured on both fonts",
+        "Only the weights actually used are shipped (audit the import options)",
+        "Font CSS variables exposed (e.g., --font-display, --font-mono) and consumed by tokens from US-001",
+        "pnpm tsc --noEmit passes",
+        "pnpm build succeeds with no font subset warnings"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Phase task 1.4. Cyrillic subset is a hard requirement per ADR-0003 (bilingual UA-EN).",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-003",
+      "title": "cn() utility + 3 hooks (useReducedMotion, useEscapeKey, useScrollProgress) — TDD",
+      "description": "As a developer, I want a tested cn() class-name merger and three small hooks (useReducedMotion, useEscapeKey, useScrollProgress) so that every primitive built later has a clean shared toolkit with verified behavior.",
+      "acceptanceCriteria": [
+        "tests/unit/lib/cn.test.ts written first; src/lib/cn.ts merges classes, removes falsy, flattens arrays",
+        "tests/unit/hooks/useReducedMotion.test.ts written first; hook returns true when matchMedia matches, updates on change event, cleans up listener on unmount",
+        "tests/unit/hooks/useEscapeKey.test.ts written first; hook fires only on Escape key, cleans up listener on unmount",
+        "tests/unit/hooks/useScrollProgress.test.ts written first; hook reports 0..1 progress using IntersectionObserver (no scroll-handler thrash)",
+        "All hooks live under src/hooks/ with named exports",
+        "pnpm vitest run passes (all new tests green)",
+        "pnpm vitest run --coverage shows ≥ 80% coverage on src/lib/ and src/hooks/",
+        "pnpm tsc --noEmit passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "Phase tasks 1.5, 1.6, 1.7, 1.8. Strict TDD: failing test → implementation → green. useScrollProgress MUST use IntersectionObserver (PLAN.md risk #4).",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-004",
+      "title": "Static primitives: Button, Tag, Rule",
+      "description": "As a developer, I want Button (3 sizes × 3 variants), Tag (mono uppercase label), and Rule (horizontal/vertical hairline with optional Framer Motion draw-in) under src/components/ui/ so that every page in P3+ has a consistent, square-cornered, focus-ring-aware base.",
+      "acceptanceCriteria": [
+        "src/components/ui/Button.tsx supports sizes sm|md|lg and variants primary|secondary|ghost; uses cn() from US-003; no border-radius, no box-shadow",
+        "Focus ring is 2px solid var(--color-accent) with outline-offset: 4px on every focusable element",
+        "src/components/ui/Tag.tsx renders monospace uppercase label using --font-mono token",
+        "src/components/ui/Rule.tsx supports orientation prop ('horizontal' | 'vertical'), 1px var(--color-fg), optional draw-in animation via Framer Motion that respects useReducedMotion from US-003",
+        "All three are server components by default unless interactive; client directive only where required",
+        "pnpm tsc --noEmit passes",
+        "pnpm lint passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "Phase tasks 1.9, 1.10, 1.11. ADR-0002 forbids border-radius and box-shadow. Build with 'use client' only on Rule when Framer Motion is imported.",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-005",
+      "title": "MarqueeText primitive (CSS animation, reduced-motion aware)",
+      "description": "As a visitor with prefers-reduced-motion: reduce, I want the marquee text to be static, while other visitors see it scroll smoothly using CSS-only animation, so that the site respects accessibility without sacrificing visual energy.",
+      "acceptanceCriteria": [
+        "tests/unit/components/ui/MarqueeText.test.tsx written first; verifies animation on by default and pauses/disables when prefers-reduced-motion: reduce",
+        "src/components/ui/MarqueeText.tsx uses CSS @keyframes (NOT Framer Motion) and consumes --duration-* tokens so reduced-motion @media rule auto-zeroes it",
+        "Component duplicates content sufficiently for seamless wrap",
+        "Uses useReducedMotion from US-003 to also conditionally apply animation classes (defense in depth)",
+        "pnpm vitest run passes",
+        "pnpm tsc --noEmit passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "Phase task 1.12. SPEC open question resolved: CSS-only over Framer Motion for perf and simpler reduced-motion story.",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-006",
+      "title": "Accordion primitive — keyboard-accessible, ARIA-correct (TDD)",
+      "description": "As a keyboard user, I want the Accordion to support arrow-key navigation between triggers, Home/End jumps, Enter/Space toggle, and correct aria-expanded state so that I can operate it without a mouse.",
+      "acceptanceCriteria": [
+        "tests/unit/components/ui/Accordion.test.tsx written first; covers ArrowUp/ArrowDown movement, Home/End jumps, Enter/Space toggle, aria-expanded reflects state, single-open mode keeps only one item open",
+        "src/components/ui/Accordion.tsx exports Accordion, AccordionItem, AccordionTrigger, AccordionContent (compound component) with default singleOpen=true and a multi-open prop escape hatch",
+        "Each trigger has correct aria-expanded, aria-controls, and id<->aria-labelledby wiring",
+        "Focus ring visible on every trigger (2px var(--color-accent), 4px offset)",
+        "pnpm vitest run passes",
+        "pnpm tsc --noEmit passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "Phase task 1.13. SPEC open question resolved: single-open default per ADR-0002 discipline.",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-007",
+      "title": "Sheet primitive — focus-trapped, Esc-dismissable (TDD)",
+      "description": "As a keyboard user, I want the Sheet to move focus into the panel on open, trap focus inside while open, return focus to the trigger on close, dismiss on Escape, and dismiss on backdrop click so that I never get lost or stuck.",
+      "acceptanceCriteria": [
+        "tests/unit/components/ui/Sheet.test.tsx written first; covers focus moves into panel on open, focus returns to trigger on close, focus is trapped inside while open, Esc closes, backdrop click closes",
+        "src/components/ui/Sheet.tsx applies inert attribute on background when open (PLAN.md risk #2)",
+        "Uses useEscapeKey from US-003 for Esc handling",
+        "Framer Motion enter/exit transitions respect useReducedMotion",
+        "ARIA: role='dialog', aria-modal='true', aria-labelledby pointing to title",
+        "pnpm vitest run passes",
+        "pnpm tsc --noEmit passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "Phase task 1.14. PLAN.md risk #2: focus trap can leak on portal mounts — use inert + manual focus management.",
+      "securityRelevant": false,
+      "e2eRequired": false
+    },
+    {
+      "id": "US-008",
+      "title": "/dev/components showcase route + E2E (axe-clean, tab order, multi-viewport)",
+      "description": "As a designer/developer, I want a gated /dev/components page that demos every primitive, and an E2E test that renders it at 375/768/1280, walks Tab order, and runs axe so that the design-system phase exits with verifiable evidence.",
+      "acceptanceCriteria": [
+        "src/app/(dev)/components/page.tsx demos Button (all 9 size×variant combos), Tag, Rule (h+v), MarqueeText, Accordion, Sheet",
+        "Route is gated by process.env.NODE_ENV !== 'production' (returns notFound() in prod)",
+        "tests/e2e/design-system.spec.ts asserts: page renders without console errors at 375, 768, 1280 viewports; logical Tab order through all primitives; focus rings visible; axe scan returns zero serious/critical violations",
+        "All primitives render at 375/768/1280 with no horizontal overflow (covered by E2E)",
+        "Final coverage check: pnpm vitest run --coverage shows ≥ 80% on src/lib/ and src/hooks/",
+        "pnpm tsc --noEmit passes",
+        "pnpm lint passes",
+        "pnpm build succeeds",
+        "pnpm exec playwright test tests/e2e/design-system.spec.ts passes",
+        "Verify in browser at /dev/components (light theme)"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "Phase tasks 1.15, 1.16, 1.17. This story closes all 4 phase exit criteria. Use @axe-core/playwright for the axe scan.",
+      "securityRelevant": false,
+      "e2eRequired": true
+    }
+  ]
+}
