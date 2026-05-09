@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — Swiss-rigorous brutalism (ADR-0002).
+ * Single source of truth for color, type, space, motion, z-index.
+ * No --radius, no --shadow: discipline by absence.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color: B/W + Carpathian red accent */
+  --color-bg: #fafaf7;
+  --color-fg: #0a0a0a;
+  --color-accent: #e63946;
+  --color-muted: #6b6b6b;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 3rem);
+  --text-4xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
+  --text-display: clamp(3rem, 1rem + 7vw, 8rem);
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+  --tracking-wider: 0.1em;
+
+  /* Space scale (4 px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-block: clamp(2rem, 1rem + 3vw, 4rem);
+  --space-section: clamp(4rem, 3rem + 5vw, 10rem);
+
+  /* Motion (zeroed by reduced-motion @media below) */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 500ms;
+  --duration-deliberate: 700ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index layers */
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-overlay: 20;
+  --z-sheet: 30;
+  --z-modal: 40;
+  --z-toast: 50;
 }
 
+/*
+ * Tailwind v4 alias block (ADR-0005).
+ * Maps :root CSS vars into Tailwind's theme namespaces so utilities
+ * like bg-bg, text-fg, text-display, duration-fast, z-sheet exist.
+ * `inline` keeps the var() reference in generated CSS so :root is the
+ * runtime authority and reduced-motion / future theming can override.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors → bg-*, text-*, border-*, ring-* */
+  --color-bg: var(--color-bg);
+  --color-fg: var(--color-fg);
+  --color-accent: var(--color-accent);
+  --color-muted: var(--color-muted);
+
+  /* Type → text-* */
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-md: var(--text-md);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+  --text-3xl: var(--text-3xl);
+  --text-4xl: var(--text-4xl);
+  --text-display: var(--text-display);
+
+  /* Leading → leading-* */
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+  --leading-relaxed: var(--leading-relaxed);
+
+  /* Tracking → tracking-* */
+  --tracking-tight: var(--tracking-tight);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: var(--tracking-wide);
+  --tracking-wider: var(--tracking-wider);
+
+  /* Motion → duration-*, ease-* */
+  --duration-fast: var(--duration-fast);
+  --duration-base: var(--duration-base);
+  --duration-slow: var(--duration-slow);
+  --duration-deliberate: var(--duration-deliberate);
+  --ease-out-expo: var(--ease-out-expo);
+  --ease-in-out: var(--ease-in-out);
+
+  /* Z-index → z-* */
+  --z-base: var(--z-base);
+  --z-sticky: var(--z-sticky);
+  --z-overlay: var(--z-overlay);
+  --z-sheet: var(--z-sheet);
+  --z-modal: var(--z-modal);
+  --z-toast: var(--z-toast);
 }
 
-@media (prefers-color-scheme: dark) {
+/*
+ * Reduced motion (a11y baseline).
+ * Zero out durations at the :root level — every primitive that consumes
+ * --duration-* (CSS keyframes, Framer Motion via CSS vars) auto-zeroes
+ * without per-component code.
+ */
+@media (prefers-reduced-motion: reduce) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --duration-deliberate: 0ms;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
