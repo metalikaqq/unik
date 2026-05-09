@@ -53,6 +53,7 @@
   --duration-base: 250ms;
   --duration-slow: 500ms;
   --duration-deliberate: 700ms;
+  --duration-marquee: 30s;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -108,8 +109,12 @@
   --duration-base: var(--duration-base);
   --duration-slow: var(--duration-slow);
   --duration-deliberate: var(--duration-deliberate);
+  --duration-marquee: var(--duration-marquee);
   --ease-out-expo: var(--ease-out-expo);
   --ease-in-out: var(--ease-in-out);
+
+  /* Animations → animate-* (Tailwind v4 generates utilities from --animate-* tokens) */
+  --animate-marquee: marquee var(--duration-marquee) linear infinite;
 
   /* Z-index → z-* */
   --z-base: var(--z-base);
@@ -142,6 +147,25 @@
     --duration-base: 0ms;
     --duration-slow: 0ms;
     --duration-deliberate: 0ms;
+    --duration-marquee: 0s;
+  }
+}
+
+/*
+ * Marquee keyframes — translateX(0) → translateX(-50%).
+ * The track contains N copies of the content laid out inline; translating
+ * by half the track width brings copy #2 to the position copy #1 started
+ * in, producing a seamless loop. Duration is var(--duration-marquee) so
+ * the @media reduced-motion block above zeroes it (defense in depth — the
+ * MarqueeText component also conditionally omits the animate-marquee class
+ * via useReducedMotion()).
+ */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
