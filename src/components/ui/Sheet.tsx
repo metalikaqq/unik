@@ -63,6 +63,25 @@ export function Sheet({
     if (open) onClose();
   });
 
+  // Declared BEFORE the focus-restore effect so its cleanup (removing `inert`)
+  // runs FIRST when `open` flips false. Browsers silently reject focus() on
+  // descendants of an inert element; if focus-restore ran while siblings were
+  // still inert, the trigger would never regain focus. JSDOM doesn't enforce
+  // inert, which is why the unit test couldn't catch this — the design-system
+  // E2E (US-008) does.
+  useEffect(() => {
+    if (!open || typeof document === "undefined") return;
+    const root = overlayRef.current;
+    const siblings = Array.from(document.body.children).filter((c) => c !== root);
+    const previousInert = siblings.map((s) => s.hasAttribute("inert"));
+    siblings.forEach((s) => s.setAttribute("inert", ""));
+    return () => {
+      siblings.forEach((s, i) => {
+        if (!previousInert[i]) s.removeAttribute("inert");
+      });
+    };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     previouslyFocused.current = (document.activeElement as HTMLElement | null) ?? null;
@@ -74,19 +93,6 @@ export function Sheet({
     }
     return () => {
       previouslyFocused.current?.focus?.();
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open || typeof document === "undefined") return;
-    const root = overlayRef.current;
-    const siblings = Array.from(document.body.children).filter((c) => c !== root);
-    const previousInert = siblings.map((s) => s.hasAttribute("inert"));
-    siblings.forEach((s) => s.setAttribute("inert", ""));
-    return () => {
-      siblings.forEach((s, i) => {
-        if (!previousInert[i]) s.removeAttribute("inert");
-      });
     };
   }, [open]);
 
@@ -124,11 +130,7 @@ export function Sheet({
   const transition = { duration: reduced ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] as const };
 
   return createPortal(
-    <div
-      ref={overlayRef}
-      {...{ [SHEET_ROOT_ATTR]: "" }}
-      className="fixed inset-0 z-50"
-    >
+    <div ref={overlayRef} {...{ [SHEET_ROOT_ATTR]: "" }} className="fixed inset-0 z-50">
       <motion.div
         data-sheet-backdrop
         onClick={handleBackdropClick}
@@ -155,10 +157,7 @@ export function Sheet({
         animate={{ x: 0, y: 0 }}
         transition={transition}
       >
-        <h2
-          id={titleId}
-          className="font-display text-xl uppercase tracking-wide mb-4"
-        >
+        <h2 id={titleId} className="font-display text-xl uppercase tracking-wide mb-4">
           {title}
         </h2>
         {children}

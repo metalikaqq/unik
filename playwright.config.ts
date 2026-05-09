@@ -25,7 +25,10 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: "pnpm start",
+        // Dev mode is required because the /dev/components showcase route
+        // calls notFound() when NODE_ENV === "production" (see src/app/dev/components/page.tsx).
+        // `next dev` sets NODE_ENV=development, making the route reachable.
+        command: `next dev --port ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !isCI,
         timeout: 120_000,
