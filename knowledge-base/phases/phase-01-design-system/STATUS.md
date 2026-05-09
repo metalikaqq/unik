@@ -3,7 +3,7 @@ id: "PHASE-01"
 title: "Design System + Tokens + UI Primitives"
 status: active
 started: "2026-05-08"
-last_updated: "2026-05-09T19:30Z"
+last_updated: "2026-05-09T20:25Z"
 last_execute_scan: "2026-05-08"
 ---
 
@@ -27,9 +27,9 @@ last_execute_scan: "2026-05-08"
 | 1.12 | Build `MarqueeText` primitive (CSS-only animation, reduced-motion aware)            | done        | US-005 — commit 729022b (CSS @keyframes + --duration-marquee + --animate-marquee; defense-in-depth via useReducedMotion + @media zeroing) |
 | 1.13 | TDD: write `Accordion.test.tsx`; build keyboard-accessible Accordion                | done        | US-006 — commit 41949ec (compound Accordion/Item/Trigger/Content; 13 tests; ArrowUp/Down + Home/End nav, singleOpen + multi modes, ARIA wiring) |
 | 1.14 | TDD: write `Sheet.test.tsx`; build focus-trapped Sheet                              | done        | US-007 — commit 3228124 (portal-mounted dialog; focus capture/restore; Tab/Shift+Tab focus trap; Esc + backdrop-click close; inert on body siblings; framer-motion enter w/ reduced-motion duration 0; 12 tests RED→GREEN) |
-| 1.15 | `/dev/components` showcase route (gated by NODE_ENV)                                | not-started | --    |
-| 1.16 | E2E: `tests/e2e/design-system.spec.ts` — render + tab order + axe scan              | not-started | --    |
-| 1.17 | Verify coverage ≥ 80 % on `lib/` + `hooks/`; record numbers                         | not-started | --    |
+| 1.15 | `/dev/components` showcase route (gated by NODE_ENV)                                | done        | US-008 — commit 3e95501 (server `page.tsx` calls `notFound()` when `NODE_ENV === "production"`; client `showcase.tsx` demos all 6 primitives) |
+| 1.16 | E2E: `tests/e2e/design-system.spec.ts` — render + tab order + axe scan              | done        | US-008 — commit 3e95501 (12 tests: 3 viewports × {render+overflow+axe} + tab + focus ring + Sheet trap; @axe-core/playwright wcag2a/2aa/21a/21aa zero serious/critical) |
+| 1.17 | Verify coverage ≥ 80 % on `lib/` + `hooks/`; record numbers                         | done        | US-008 — 98.5% stmts / 95.83% branches / 94.73% funcs / 98.14% lines on src/lib + src/hooks |
 
 ## Deliverables Tracker
 
@@ -39,16 +39,17 @@ last_execute_scan: "2026-05-08"
 | Font loading via `next/font` (Inter Display + JetBrains Mono with Cyrillic)                  | done    | commit 118d902 — Inter (opsz axis) + JetBrains_Mono, latin+cyrillic subsets, display: swap |
 | UI primitives: `Button`, `Tag`, `Rule`, `MarqueeText`, `Accordion`, `Sheet`                  | done    | commit f32d833 (Button + Tag + Rule), 729022b (MarqueeText), 41949ec (Accordion), 3228124 (Sheet) |
 | Hooks: `useReducedMotion`, `useEscapeKey`, `useScrollProgress`                               | done    | commit e12f7df — all three under src/hooks/, 32 tests, 98.5% statements coverage |
-| TDD coverage for primitives + hooks                                                          | pending | --       |
+| TDD coverage for primitives + hooks                                                          | done    | 65 unit tests pass; 98.5% stmts / 95.83% branches on src/lib + src/hooks (US-003..US-007); +12 Playwright E2E for end-to-end primitive coverage (US-008) |
+| `/dev/components` showcase route (NODE_ENV-gated) + Playwright E2E (axe-clean, multi-viewport) | done  | commit 3e95501 — `next dev` reachable; production build prerenders 404 |
 
 ## Exit Criteria Tracker
 
 | #   | Criterion                                                                          | Met | Evidence |
 | --- | ---------------------------------------------------------------------------------- | --- | -------- |
-| 1   | All primitives render at 375 / 768 / 1280 with no overflow.                        | no  | --       |
-| 2   | No primitive uses `border-radius` or `box-shadow` (Swiss discipline).              | no  | --       |
-| 3   | axe scan on `/dev/components` returns zero serious/critical violations.            | no  | --       |
-| 4   | Coverage ≥ 80 % on `src/lib/` + `src/hooks/`.                                      | no  | --       |
+| 1   | All primitives render at 375 / 768 / 1280 with no overflow.                        | yes | US-008 commit 3e95501 — `no horizontal overflow at {mobile-375,tablet-768,desktop-1280}` Playwright tests pass; computed `scrollWidth − innerWidth ≤ 0` at every viewport |
+| 2   | No primitive uses `border-radius` or `box-shadow` (Swiss discipline).              | yes | Audit of src/components/ui/* — no `rounded-*`, `shadow-*`, `border-radius`, or `box-shadow` declarations; ADR-0002 enforced via token absence (no `--radius` / `--shadow` tokens defined in globals.css) |
+| 3   | axe scan on `/dev/components` returns zero serious/critical violations.            | yes | US-008 commit 3e95501 — `axe scan clean at {mobile-375,tablet-768,desktop-1280}` with @axe-core/playwright tags `wcag2a/2aa/21a/21aa`, filtered to `impact === serious \|\| critical` |
+| 4   | Coverage ≥ 80 % on `src/lib/` + `src/hooks/`.                                      | yes | 98.5 % stmts / 95.83 % branches / 94.73 % funcs / 98.14 % lines (vitest --coverage) |
 
 ## Blockers
 
@@ -72,6 +73,7 @@ None. PHASE-00 is `completed`; all dependencies satisfied.
 | 2026-05-09 | Ralph iter 5 — US-005 complete: task 1.12 done; MarqueeText (client) under src/components/ui/ with CSS @keyframes + --duration-marquee + --animate-marquee in @theme; 8 new component tests (40 total); tsc/lint/build green | ai |
 | 2026-05-09 | Ralph iter 6 — US-006 complete: task 1.13 done; Accordion compound (client) with 2-context arch + DOM-walk keyboard nav + useId-scoped ARIA ids; 13 new tests (53 total); tsc/lint/tests green | ai |
 | 2026-05-09 | Ralph iter 7 — US-007 complete: task 1.14 done; Sheet primitive (client, portal) with focus capture/restore + Tab focus trap + inert siblings + Esc/backdrop close + framer-motion enter; 12 new tests (65 total); tsc/lint/build green | ai |
+| 2026-05-09 | Ralph iter 8 — US-008 complete: tasks 1.15/1.16/1.17 done; `src/app/dev/components/` showcase (server gate via `notFound()` in production + client island demoing all 6 primitives) + `tests/e2e/design-system.spec.ts` (12 tests covering 3 viewports × {render, overflow, axe} + tab order + focus ring + Sheet trap); regression in Sheet useEffect ordering surfaced + fixed (inert effect declared before focus-restore so cleanup order doesn't strand focus on inert trigger — JSDOM gap). All 4 phase exit criteria met. | ai |
 
 ## PLAN.md Amendments
 

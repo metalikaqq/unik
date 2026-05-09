@@ -152,7 +152,7 @@
         "Verify in browser at /dev/components (light theme)"
       ],
       "priority": 8,
-      "passes": false,
+      "passes": true,
       "notes": "Phase tasks 1.15, 1.16, 1.17. This story closes all 4 phase exit criteria. Use @axe-core/playwright for the axe scan.",
       "securityRelevant": false,
       "e2eRequired": true

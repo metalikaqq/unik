@@ -115,13 +115,38 @@
       "healthCheck": "PASS",
       "buildStatus": "PASS",
       "timestamp": "2026-05-09T19:30:00Z"
+    },
+    {
+      "iteration": 8,
+      "storyId": "US-008",
+      "tier": 3,
+      "testsRun": 65,
+      "testsPassed": 65,
+      "newTests": 0,
+      "e2eTestsRun": 12,
+      "e2eTestsPassed": 12,
+      "coverage": {
+        "statements": 98.5,
+        "branches": 95.83,
+        "functions": 94.73,
+        "lines": 98.14,
+        "scope": "src/lib/ + src/hooks/ (unchanged — showcase + E2E live outside coverage include)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "regressionFixed": "Sheet focus-restore on Esc-dismiss (effect ordering); JSDOM didn't enforce inert so US-007 unit test missed it; E2E surfaced it across viewports.",
+      "timestamp": "2026-05-09T20:25:00Z"
     }
   ],
   "summary": {
-    "storiesComplete": 7,
+    "storiesComplete": 8,
     "storiesTotal": 8,
     "avgCoverage": 98.5,
-    "regressionsFound": 0,
+    "regressionsFound": 1,
+    "regressionsFixed": 1,
     "qualityScore": null
   }
 }

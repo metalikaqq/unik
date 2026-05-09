@@ -541,3 +541,104 @@
   portal also mounting to body, body has [tl-container, sheet-root]
   during open. Filter `body.children` by `!hasAttribute("data-sheet-root")`
   to assert all siblings (i.e., tl-container) get inert.
+
+### Iteration 8 — US-008: /dev/components showcase + axe-clean Playwright E2E
+**Date:** 2026-05-09T20:25Z
+**Quality Tier:** 3 (per .ralph-context.json — final story)
+**Health Check:** PASS — 65/65 unit tests, 0 type errors, 0 lint errors pre-work
+**Implemented:**
+- `src/app/dev/components/page.tsx` (server) — `notFound()` when
+  `NODE_ENV === "production"`; `dynamic = "force-static"` so the prod
+  build prerenders the 404 directly. Adds `robots: { index: false, follow: false }`.
+  URL `/dev/components` (chose plain `dev/` folder over the AC's `(dev)`
+  route group because the verify step explicitly requires the literal
+  `/dev/components` URL — route groups with parens disappear from URLs).
+- `src/app/dev/components/showcase.tsx` (client island) — all 6 primitives:
+  Button (3 sizes × 3 variants = 9 testid'd combos), Tag (4 chips),
+  Rule (h+v plain and drawIn), MarqueeText (Cyrillic + Latin),
+  Accordion (3 ARIA-correct items), Sheet (focus-trapped trigger +
+  Esc-dismissable). Each in a labeled `<section id="...">` for E2E.
+- `tests/e2e/design-system.spec.ts` — 12 chromium tests:
+  3 viewports (375/768/1280) × {renders without console errors,
+  no horizontal overflow, axe wcag2a/2aa/21a/21aa zero serious|critical}
+  + Tab-order trail (Buttons by testid, Accordion triggers by textContent)
+  + focus ring outline (2px solid via getComputedStyle)
+  + Sheet end-to-end (Enter to open, close auto-focused, Esc closes,
+    focus returns to trigger).
+- `playwright.config.ts` — webServer command swapped from `pnpm start`
+  to `next dev --port ${PORT}` because `next start` runs in
+  NODE_ENV=production which makes the showcase notFound().
+- **Regression fix in `src/components/ui/Sheet.tsx`** surfaced by the new
+  E2E: focus didn't return to the trigger on Esc-dismiss in Chromium.
+  Cause — the focus-restore useEffect was declared BEFORE the inert
+  useEffect, and React runs cleanups in declaration order, so on close
+  the focus-restore cleanup ran while the trigger's parent was still
+  inert; Chromium silently rejected `focus()` on inert descendants.
+  JSDOM is a no-op for inert (it sets the attribute but doesn't enforce
+  focus blocking), which is why the US-007 unit test couldn't catch it.
+  Fix: swap declaration order so inert-cleanup runs first, focus-restore
+  second. Inline comment documents the ordering contract.
+
+**Files changed:**
+- src/app/dev/components/page.tsx (new, 19 lines)
+- src/app/dev/components/showcase.tsx (new, 192 lines)
+- tests/e2e/design-system.spec.ts (new, 165 lines)
+- playwright.config.ts (modified — webServer command)
+- src/components/ui/Sheet.tsx (modified — useEffect reorder + comment)
+
+**Tests:**
+- Unit: 65/65 passed (no new unit tests; coverage on src/lib + src/hooks
+  unchanged at 98.5% stmts / 95.83% branches / 94.73% funcs / 98.14% lines)
+- E2E: 12/12 passed on chromium in 2.9s wall clock
+
+**Lint / Type / Build:**
+- pnpm typecheck → 0 errors
+- pnpm lint → 0 errors (2 pre-existing warnings on coverage/ artifacts,
+  gitignored generated files)
+- pnpm build → success; route table confirms ○ /dev/components prerendered
+  as 404 in production (notFound() during static generation)
+
+**Secrets scan:** clean.
+**Commit:** 3e95501
+
+**Phase exit criteria — all 4 met:**
+1. Primitives render at 375/768/1280 with no overflow ✓
+2. No border-radius / box-shadow on any primitive ✓ (audit + ADR-0002)
+3. axe scan zero serious/critical at 3 viewports ✓
+4. Coverage ≥ 80% on src/lib + src/hooks ✓ (98.5%)
+
+**Learnings:**
+- Next.js route groups `(name)` are URL-invisible — they only group files
+  for organization. If the AC says `(dev)/components` but the verify URL
+  is `/dev/components`, plain `dev/` folder is required. Read the verify
+  step before interpreting the AC's path.
+- `next dev` and `next start` set different NODE_ENV automatically. Any
+  `process.env.NODE_ENV !== "production"` route gate FAILS under
+  Playwright's default `pnpm start` webServer — switch to `next dev`
+  for E2E specs that exercise dev-only routes. Production prerender
+  still bakes the gate (the route in the prod build is the 404 page),
+  so the gate is honored at all entry points.
+- React cleanup order = effect DECLARATION order, not reverse. Two
+  side-effecting effects with overlapping cleanups (focus-restore +
+  inert) are order-dependent. Browsers silently reject focus() on
+  descendants of inert elements, so the focus-restore must run AFTER
+  the inert-removal cleanup. Declare inert effect first.
+- JSDOM is a no-op for the `inert` HTML attribute — it sets the
+  attribute string but doesn't enforce focus blocking. Unit tests
+  asserting "inert is set" pass, but cross-browser focus-restore
+  bugs only show up under real browsers (Chromium / Firefox / Safari).
+  Always pair an inert + focus-management primitive with a real-browser
+  E2E test.
+- Tailwind `uppercase` class is a CSS `text-transform` only — it does
+  NOT change `textContent` in the DOM. Tests that match against text
+  must use the original case, not the visual case. Discovered when
+  asserting "WHAT IS UNIK?" failed against textContent "What is Unik?".
+- @axe-core/playwright with `withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"])`
+  + filter on `impact === "serious" || "critical"` is the right
+  baseline gate — it rejects real blockers (missing labels, contrast,
+  focus indicators) without flagging cosmetic best-practice rules.
+- Filter Next dev console noise (Fast Refresh, HMR, DevTools tip) by
+  substring match on console.error text, not by aggressive type filtering.
+  Real React errors and uncaught exceptions surface unfiltered as
+  pageerror events.
+
