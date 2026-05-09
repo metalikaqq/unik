@@ -118,6 +118,16 @@
   --z-sheet: var(--z-sheet);
   --z-modal: var(--z-modal);
   --z-toast: var(--z-toast);
+
+  /*
+   * Fonts (US-002).
+   * next/font sets --font-inter and --font-jetbrains-mono on <html> via the
+   * className applied in layout.tsx. We alias them here to the
+   * design-system-facing token names --font-display and --font-mono so
+   * primitives consume tokens, never raw next/font slot names.
+   */
+  --font-display: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /*
@@ -138,6 +148,10 @@
 body {
   background: var(--color-bg);
   color: var(--color-fg);
+  font-family: var(--font-display);
+  /* Activate Inter's opsz axis so headings render with the "Display"
+     optical-size variant automatically based on font-size. */
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
