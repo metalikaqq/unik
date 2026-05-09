@@ -56,7 +56,7 @@
         "pnpm tsc --noEmit passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Phase tasks 1.5, 1.6, 1.7, 1.8. Strict TDD: failing test → implementation → green. useScrollProgress MUST use IntersectionObserver (PLAN.md risk #4).",
       "securityRelevant": false,
       "e2eRequired": false

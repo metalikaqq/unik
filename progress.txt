@@ -118,3 +118,71 @@
 - Variable Google Fonts ship one file covering the entire weight axis. The PRD
   AC about "only weights actually used" resolves to: variable font is the
   leanest option (one file, full axis) — preferable to listing static weights.
+
+### Iteration 3 — US-003: cn() utility + 3 hooks (TDD)
+**Date:** 2026-05-09T18:48Z
+**Quality Tier:** 1
+**Health Check:** PASS (2 tests passed pre-work, 0 type/lint errors)
+**Implemented (strict TDD — RED → GREEN for each):**
+- `src/lib/cn.ts` — recursive class-merger: flattens nested arrays, drops
+  falsy (false/null/undefined/0/""), splits on whitespace so `cn("a  b","c")`
+  → `"a b c"`. Stringifies non-zero numbers (so `count > 0 && count` patterns
+  still emit a class). Type `ClassValue = string | number | false | null
+  | undefined | ClassValue[]`.
+- `src/hooks/useReducedMotion.ts` — `useSyncExternalStore` over
+  `window.matchMedia('(prefers-reduced-motion: reduce)')`. Subscribes to
+  the change event; getServerSnapshot returns false (SSR-safe); React
+  drives consistency, no manual setState in effect (lint clean).
+- `src/hooks/useEscapeKey.ts` — single `keydown` listener on `window`,
+  filters to `event.key === "Escape"` only. Latest-callback pattern via
+  `useRef` so consumers can pass inline functions without re-binding the
+  listener every render. Cleanup on unmount.
+- `src/hooks/useScrollProgress.ts` — IntersectionObserver with 101
+  thresholds (0.00..1.00 step 0.01). Computes monotone progress
+  `clamp01((rootBounds.height - rect.top) / (rootBounds.height + rect.height))`
+  → 0 as element enters from bottom, 1 as it exits to top. Falls back to
+  `intersectionRatio` when `rootBounds` is null (cross-origin iframe).
+  NO scroll handler — verified by test that asserts
+  `window.addEventListener('scroll', ...)` was never called.
+**Files changed:**
+- src/lib/cn.ts (new, 31 lines)
+- src/hooks/useReducedMotion.ts (new, 24 lines)
+- src/hooks/useEscapeKey.ts (new, 20 lines)
+- src/hooks/useScrollProgress.ts (new, 53 lines)
+- tests/unit/lib/cn.test.ts (new, 10 cases)
+- tests/unit/hooks/useReducedMotion.test.ts (new, 5 cases)
+- tests/unit/hooks/useEscapeKey.test.ts (new, 4 cases)
+- tests/unit/hooks/useScrollProgress.test.ts (new, 11 cases)
+**Tests:** 32 passed (28 new + 4 existing); 0 failures.
+**Coverage on src/lib/ + src/hooks/:** 98.5% stmts / 95.83% branches /
+  94.73% funcs / 98.14% lines — clears the 80% gate by a wide margin.
+**Lint / Type:** `pnpm typecheck` clean; `pnpm lint` 0 errors (2 unrelated
+  warnings on generated `coverage/` artifacts which are gitignored).
+**Build:** `pnpm build` succeeded — 4 static pages, no warnings.
+**Secrets scan:** clean.
+**Commit:** e12f7df
+**Learnings:**
+- `useSyncExternalStore` is the canonical fix for `react-hooks/set-state-in-effect`
+  when the value comes from a subscribable browser store like matchMedia.
+  Pattern: pure `subscribe` + pure `getSnapshot` + `getServerSnapshot` for
+  SSR. React handles the consistency tear and snapshot stability — no
+  setState inside useEffect needed.
+- IntersectionObserver gives "scroll progress through viewport" without
+  any scroll handler. Use 101 thresholds (`Array.from({length:101}, (_,i)=>i/100)`)
+  so callbacks fire on every ~1% intersection step, then compute monotone
+  progress from `boundingClientRect.top + rootBounds.height`. Tested by
+  spying `window.addEventListener` and asserting NO `'scroll'` calls.
+- `react-hooks/set-state-in-effect` (eslint-plugin-react-hooks v6) is strict
+  about ANY direct setState in an effect body — even guarded ones. Move to
+  external-store hook or callback ref pattern.
+- v8 coverage `include` from vitest.config.ts (`src/lib/**`, `src/hooks/**`)
+  emits ONLY those paths, but the `coverage/` HTML output triggers eslint
+  scans on generated files. /coverage is gitignored; the 2 warnings are
+  cosmetic. Could add `coverage/` to eslint `ignores` in a follow-up.
+- `Mock<(args) => void>` type from vitest gives strict callable types
+  for vi.fn() return values — better than `ReturnType<typeof vi.fn>`
+  which is `Mock<Procedure | Constructable>` and trips TS2348 on
+  function-call usage.
+- Latest-callback ref pattern: store callback in `useRef`, sync it in a
+  separate `useEffect([cb])`, and call `ref.current()` from the listener.
+  Lets consumers pass inline functions without churning the listener.

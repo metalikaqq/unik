@@ -3,7 +3,7 @@ id: "PHASE-01"
 title: "Design System + Tokens + UI Primitives"
 status: active
 started: "2026-05-08"
-last_updated: "2026-05-09T18:40Z"
+last_updated: "2026-05-09T18:48Z"
 last_execute_scan: "2026-05-08"
 ---
 
@@ -17,10 +17,10 @@ last_execute_scan: "2026-05-08"
 | 1.2  | `@theme inline { ... }` block in `globals.css` aliasing CSS vars to Tailwind        | done        | US-001 — commit f80fd78 |
 | 1.3  | Reduced-motion `@media` rule zeroing `--duration-*`                                 | done        | US-001 — commit f80fd78 |
 | 1.4  | `next/font` config for Inter Display + JetBrains Mono with Latin + Cyrillic subsets | done        | US-002 — commit 118d902 |
-| 1.5  | TDD: write `cn.test.ts`; implement `lib/cn.ts`                                      | not-started | --    |
-| 1.6  | TDD: write `useReducedMotion.test.ts`; implement hook                               | not-started | --    |
-| 1.7  | TDD: write `useEscapeKey.test.ts`; implement hook                                   | not-started | --    |
-| 1.8  | TDD: write `useScrollProgress.test.ts`; implement hook                              | not-started | --    |
+| 1.5  | TDD: write `cn.test.ts`; implement `lib/cn.ts`                                      | done        | US-003 — commit e12f7df |
+| 1.6  | TDD: write `useReducedMotion.test.ts`; implement hook                               | done        | US-003 — commit e12f7df (useSyncExternalStore) |
+| 1.7  | TDD: write `useEscapeKey.test.ts`; implement hook                                   | done        | US-003 — commit e12f7df |
+| 1.8  | TDD: write `useScrollProgress.test.ts`; implement hook                              | done        | US-003 — commit e12f7df (IntersectionObserver, no scroll handler) |
 | 1.9  | Build `Button` primitive (3 sizes × 3 variants, focus ring, square corners)         | not-started | --    |
 | 1.10 | Build `Tag` primitive (mono uppercase label)                                        | not-started | --    |
 | 1.11 | Build `Rule` primitive (h/v hairline, optional draw-in via Framer Motion)           | not-started | --    |
@@ -38,7 +38,7 @@ last_execute_scan: "2026-05-08"
 | Token system in `src/app/globals.css` using Tailwind v4 `@theme`                             | done    | commit f80fd78 — :root + @theme inline + reduced-motion |
 | Font loading via `next/font` (Inter Display + JetBrains Mono with Cyrillic)                  | done    | commit 118d902 — Inter (opsz axis) + JetBrains_Mono, latin+cyrillic subsets, display: swap |
 | UI primitives: `Button`, `Tag`, `Rule`, `MarqueeText`, `Accordion`, `Sheet`                  | pending | --       |
-| Hooks: `useReducedMotion`, `useEscapeKey`, `useScrollProgress`                               | pending | --       |
+| Hooks: `useReducedMotion`, `useEscapeKey`, `useScrollProgress`                               | done    | commit e12f7df — all three under src/hooks/, 32 tests, 98.5% statements coverage |
 | TDD coverage for primitives + hooks                                                          | pending | --       |
 
 ## Exit Criteria Tracker
