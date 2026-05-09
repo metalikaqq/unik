@@ -642,3 +642,76 @@
   Real React errors and uncaught exceptions surface unfiltered as
   pageerror events.
 
+
+================================================================================
+PHASE: diploma-frontend (mega-phase, replaces P02→P10)
+================================================================================
+
+### Iteration 9 — US-001: i18n shell — next-intl + [locale] segment + Header/Footer + UA/EN parity test
+**Date:** 2026-05-10T00:08Z
+**Quality Tier:** 1
+**Health Check:** PASS — 65/65 unit tests, 0 type errors, 0 lint errors pre-work
+**Implemented:**
+- `src/i18n/routing.ts` — `defineRouting({locales:['uk','en'], defaultLocale:'uk', localePrefix:'always'})` + `isLocale` type-guard.
+- `src/i18n/request.ts` — `getRequestConfig` resolves locale from segment via `requestLocale`, falls back to defaultLocale on invalid input, dynamic-imports `./locales/<locale>/common.json` and exposes it under the `common` namespace.
+- `src/i18n/navigation.ts` — `createNavigation(routing)` re-exports `Link/redirect/usePathname/useRouter` + `getPathname` for typed locale-aware navigation.
+- `src/i18n/locales/{uk,en}/common.json` — nav (5 keys), footer (copyright/tagline/social×3), localeSwitcher (label/uk/en/ukShort/enShort), skipLink. Strict UA/EN parity.
+- `src/middleware.ts` — `createMiddleware(routing)` with matcher excluding `_next`, `_vercel`, `dev` (so /dev/components stays unprefixed per PRD note), and any path with a dot. Next 16 emits a deprecation warning ("middleware → proxy") at build but functionality is identical; PRD AC requires the `src/middleware.ts` filename, so kept as-is.
+- `next.config.ts` — wrapped with `createNextIntlPlugin('./src/i18n/request.ts')`.
+- `src/app/[locale]/layout.tsx` — root layout for localized routes. Calls `hasLocale(routing.locales, locale)` → `notFound()` for invalid locales; `setRequestLocale(locale)` to enable static rendering with i18n; emits `<html lang={locale}>`; `generateStaticParams` returns both locales for SSG. Wraps children in `NextIntlClientProvider` (reads locale/messages from server context in v4 — no props needed) + Header + Footer.
+- `src/app/[locale]/page.tsx` — minimal placeholder home (US-002 will flesh it out). Uses `setRequestLocale` to keep page static.
+- `src/app/dev/layout.tsx` — separate root layout for the unlocalized `/dev` subtree (Next 16 allows multiple root layouts as long as no top-level `app/layout.tsx` exists; each immediate child of `app/` then becomes its own root).
+- `src/components/layout/Header.tsx` — server component, uses `getTranslations('common')` for nav/skip-link copy. Renders `<a href="#main">` skip link, brand mark, nav `<ul>` with 5 next-intl `<Link>`s (locale-prefix preserved), and the `LocaleSwitcher` client island.
+- `src/components/layout/Footer.tsx` — server component with copyright + tagline + social row. All copy via `getTranslations('common.footer')`.
+- `src/components/layout/LocaleSwitcher.tsx` — client island. `useLocale` + `useRouter`/`usePathname` from `@/i18n/navigation`. Toggle buttons call `router.replace(pathname, {locale})` inside `startTransition` so the path is preserved when swapping locales. Active locale rendered as a disabled button with `aria-current="true"`. Visually two short-codes separated by a slash (UA / EN) with screen-reader-only full names.
+- `tests/unit/i18n/parity.test.ts` — recursive deep-key collector over every `*.json` file under `src/i18n/locales/<locale>/`. Three assertions: ≥2 locales declared, identical namespace files per locale, identical key-set per namespace across all locales (missing AND extra both fail).
+- `tests/unit/i18n/routing.test.ts` — 5 assertions on routing config + `isLocale` happy/sad path.
+
+**Files changed:**
+- next.config.ts (modified — plugin wrapper)
+- src/middleware.ts (new)
+- src/i18n/routing.ts (new)
+- src/i18n/request.ts (new)
+- src/i18n/navigation.ts (new)
+- src/i18n/locales/uk/common.json (new)
+- src/i18n/locales/en/common.json (new)
+- src/app/[locale]/layout.tsx (new — replaces src/app/layout.tsx)
+- src/app/[locale]/page.tsx (new — replaces src/app/page.tsx)
+- src/app/dev/layout.tsx (new — separate root for /dev/*)
+- src/app/layout.tsx (deleted)
+- src/app/page.tsx (deleted)
+- src/components/layout/Header.tsx (new)
+- src/components/layout/Footer.tsx (new)
+- src/components/layout/LocaleSwitcher.tsx (new)
+- tests/unit/i18n/parity.test.ts (new)
+- tests/unit/i18n/routing.test.ts (new)
+
+**Tests:**
+- Unit: 72/72 passed (was 65 — added 7: 3 parity + 4 routing/isLocale)
+- Coverage (now scoped over src/lib + src/hooks + src/i18n + src/content):
+  89.47% stmts / 82.14% branches / 81.81% funcs / 88.7% lines
+  (above the 80% global thresholds; request.ts and navigation.ts are
+   server-runtime modules that vitest's jsdom env doesn't load — they
+   pull coverage down per-file but the suite still clears the gates.)
+
+**Lint / Type / Build:**
+- pnpm typecheck → 0 errors
+- pnpm lint → 0 errors (2 pre-existing warnings on coverage/ generated artifacts, gitignored)
+- pnpm build → success; route table:
+    ● /[locale] (SSG)        → /uk + /en pre-rendered
+    ○ /_not-found            (static)
+    ○ /dev/components        (static — notFound() in prod)
+    ƒ Proxy (Middleware)     handled at the edge
+
+**Secrets scan:** clean.
+
+**Learnings:**
+- **Multiple root layouts in Next 16** — when there is no `app/layout.tsx`, every direct child of `app/` becomes its own root layout. `app/[locale]/layout.tsx` and `app/dev/layout.tsx` can coexist as independent root layouts (each emits its own `<html>`/`<body>`). Cross-root navigation triggers a full page reload, which is fine for `/dev/*` since it's an internal route. This is the cleanest way to keep an unlocalized branch alongside an `[locale]`-segmented main app without dragging the locale provider into dev tooling.
+- **next-intl v4 `<NextIntlClientProvider>` reads from server context** — when used inside a server component (like the locale layout), no `locale`/`messages` props are required if you've already called `setRequestLocale(locale)`. The provider in `next-intl/server` resolves them from the request scope. Don't pass them explicitly unless you have a reason to override.
+- **`setRequestLocale` is mandatory for static rendering with next-intl v4** — without it, pages that call `useTranslations`/`getTranslations` opt out of SSG into dynamic rendering. Call it at the top of every server component that needs translations, including layouts. Pages further down inherit, but it's safer to call it in each layout/page.
+- **Next 16 `middleware.ts` → `proxy.ts` rename is cosmetic** — the file convention is deprecated (build emits a warning) but functionally identical. Use `proxy.ts` for new work; only keep `middleware.ts` when an external spec or AC names it explicitly. The codemod is `npx @next/codemod@canary middleware-to-proxy .`.
+- **next-intl middleware matcher must exclude every unlocalized route** — the default matcher rewrites everything not starting with `_next`/`_vercel`. If you have an intentional unlocalized branch (here: `/dev/*`), exclude it explicitly in `config.matcher`, otherwise the middleware redirects `/dev/components` to `/uk/dev/components`. The pattern `/((?!_next|_vercel|dev|.*\\..*).*)` covers internals + the dev branch + any path with a dot (static files like `/favicon.ico`, `/robots.txt`).
+- **next-intl Link from `createNavigation(routing)` automatically prefixes the active locale** — `<Link href="/speakers">` on `/uk/...` renders `/uk/speakers`. No manual locale interpolation. `router.replace(pathname, {locale: 'en'})` is the canonical way to swap locales while preserving the current path.
+- **Locale switcher inside `useTransition`** — wrapping the router action in `startTransition` lets the active button render `disabled={isPending}` during navigation, preventing double-clicks and giving immediate visual feedback. Without it, fast clicks can race the router.
+- **Do not forget Cyrillic font subset** — `next/font/google` `Inter`/`JetBrains_Mono` need `subsets: ['latin', 'cyrillic']` for UA. ADR-0003 already sets this in the layout; preserved in the move under `[locale]/`.
+- **vitest coverage `include` is the file-level allowlist** — adding `src/i18n/**` and `src/content/**` to the include list pulls them into the report. server-runtime files (request.ts uses `getRequestConfig`, navigation.ts uses `createNavigation`) read 0% under jsdom because vitest doesn't execute them — they pull aggregate coverage down but global thresholds still cleared. If thresholds tighten later, exclude them or write integration tests.

@@ -21,7 +21,7 @@
         "pnpm build succeeds with both /uk and /en pre-rendering"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "ADR-0003 (bilingual UA/EN), ADR-0001 (Next.js 16 App Router). next-intl is already in dependencies per PHASE-00 baseline. Read AGENTS.md + node_modules/next/dist/docs/ for Next 16 specifics before wiring. Existing /dev/components route should still work — keep it under src/app/dev/ (no [locale] prefix).",
       "securityRelevant": false,
       "e2eRequired": true
