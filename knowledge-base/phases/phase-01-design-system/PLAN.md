@@ -1,7 +1,7 @@
 ---
 id: "PHASE-01"
 title: "Design System + Tokens — Plan"
-status: proposed
+status: planned
 ---
 
 # Phase 01: Execution Plan

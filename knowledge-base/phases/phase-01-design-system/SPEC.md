@@ -1,48 +1,48 @@
 ---
 id: "PHASE-01"
 title: "Design System + Tokens + UI Primitives"
-status: proposed
-author_type: human
-ai_model: null
+status: completed
+author_type: ai
+ai_model: claude-opus-4-7
 created: "2026-05-08"
-started: null
-completed: null
+started: "2026-05-08"
+completed: "2026-05-09"
 component: frontend
 dependencies: ["PHASE-00"]
 blocked_by: []
 deliverables:
   - name: "Token system in src/app/globals.css using Tailwind v4 @theme"
-    status: pending
-    verification: "Color, type, space, motion CSS vars all referenced; zero hard-coded values in any component."
+    status: done
+    verification: "commit f80fd78 — :root + @theme inline + reduced-motion @media zeroing --duration-*."
   - name: "Font loading via next/font (Inter Display + JetBrains Mono with Cyrillic)"
-    status: pending
-    verification: "Inspect rendered HTML — only used weights ship; Cyrillic glyphs render."
+    status: done
+    verification: "commit 118d902 — Inter (opsz axis) + JetBrains_Mono via next/font/google, latin+cyrillic subsets, display: swap, --font-display/--font-mono aliased at :root."
   - name: "UI primitives: Button, Tag, Rule, MarqueeText, Accordion, Sheet"
-    status: pending
-    verification: "Each demoed at /dev/components in light, all interactions keyboard-reachable."
+    status: done
+    verification: "commits f32d833 (Button + Tag + Rule), 729022b (MarqueeText), 41949ec (Accordion compound), 3228124 (Sheet portal). All demoed at /dev/components, keyboard-reachable, axe-clean."
   - name: "Hooks: useReducedMotion, useEscapeKey, useScrollProgress"
-    status: pending
-    verification: "Each unit-tested with Vitest; coverage ≥ 80 % on src/hooks/."
+    status: done
+    verification: "commit e12f7df — all three under src/hooks/, 32 unit tests, 98.5% statements coverage on src/hooks/."
   - name: "TDD coverage for primitives + hooks"
-    status: pending
-    verification: "Component tests for Accordion (arrow-key nav), Sheet (focus trap), MarqueeText (reduced motion); axe-clean on /dev/components."
+    status: done
+    verification: "65 unit tests (Accordion 13, Sheet 12, MarqueeText 8, hooks 32) + 12 Playwright E2E (3 viewports × {render, overflow, axe} + tab order + focus ring + Sheet trap)."
 exit_criteria:
   - criterion: "All primitives render at 375 / 768 / 1280 with no overflow."
-    met: false
-    evidence: null
+    met: true
+    evidence: "US-008 commit 3e95501 — tests/e2e/design-system.spec.ts asserts scrollWidth − innerWidth ≤ 0 at mobile-375/tablet-768/desktop-1280; PASS on chromium + firefox."
   - criterion: "No primitive uses border-radius or box-shadow (Swiss discipline)."
-    met: false
-    evidence: null
+    met: true
+    evidence: "Audit of src/components/ui/* — no rounded-*, shadow-*, border-radius, or box-shadow declarations. Enforced via token absence (no --radius / --shadow defined in globals.css)."
   - criterion: "axe scan on /dev/components returns zero serious/critical violations."
-    met: false
-    evidence: null
+    met: true
+    evidence: "US-008 commit 3e95501 — @axe-core/playwright with tags wcag2a/2aa/21a/21aa, filtered to impact serious|critical, zero violations across mobile-375/tablet-768/desktop-1280."
   - criterion: "Coverage ≥ 80 % on src/lib/ + src/hooks/."
-    met: false
-    evidence: null
+    met: true
+    evidence: "vitest --coverage: 98.5% statements / 95.83% branches / 94.73% functions / 98.14% lines on src/lib + src/hooks (recorded in ralph-metrics.json)."
 tags: ["design-system", "tokens", "primitives"]
 estimated_weeks: 0.6
-actual_weeks: null
-confidence_score: null
+actual_weeks: 0.2
+confidence_score: 9.5
 ---
 
 # Phase 01: Design System + Tokens + UI Primitives

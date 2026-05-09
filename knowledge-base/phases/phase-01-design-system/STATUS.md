@@ -1,10 +1,11 @@
 ---
 id: "PHASE-01"
 title: "Design System + Tokens + UI Primitives"
-status: active
+status: completed
 started: "2026-05-08"
-last_updated: "2026-05-09T20:25Z"
-last_execute_scan: "2026-05-08"
+completed: "2026-05-09"
+last_updated: "2026-05-09T20:30Z"
+last_execute_scan: "2026-05-09"
 ---
 
 # Phase 01: Status
@@ -74,6 +75,7 @@ None. PHASE-00 is `completed`; all dependencies satisfied.
 | 2026-05-09 | Ralph iter 6 — US-006 complete: task 1.13 done; Accordion compound (client) with 2-context arch + DOM-walk keyboard nav + useId-scoped ARIA ids; 13 new tests (53 total); tsc/lint/tests green | ai |
 | 2026-05-09 | Ralph iter 7 — US-007 complete: task 1.14 done; Sheet primitive (client, portal) with focus capture/restore + Tab focus trap + inert siblings + Esc/backdrop close + framer-motion enter; 12 new tests (65 total); tsc/lint/build green | ai |
 | 2026-05-09 | Ralph iter 8 — US-008 complete: tasks 1.15/1.16/1.17 done; `src/app/dev/components/` showcase (server gate via `notFound()` in production + client island demoing all 6 primitives) + `tests/e2e/design-system.spec.ts` (12 tests covering 3 viewports × {render, overflow, axe} + tab order + focus ring + Sheet trap); regression in Sheet useEffect ordering surfaced + fixed (inert effect declared before focus-restore so cleanup order doesn't strand focus on inert trigger — JSDOM gap). All 4 phase exit criteria met. | ai |
+| 2026-05-09 | Phase gate PASS — Tier 3 quality pipeline: build/typecheck/lint/tests/coverage/dep-audit/secrets all green; quality score 9.5/10 (`ralph-metrics.json`). SPEC + STATUS + PHASE-OVERVIEW transitioned `active` → `completed`. | ai |
 
 ## PLAN.md Amendments
 
