@@ -3,7 +3,7 @@ id: "PHASE-01"
 title: "Design System + Tokens + UI Primitives"
 status: active
 started: "2026-05-08"
-last_updated: "2026-05-09T19:19Z"
+last_updated: "2026-05-09T19:30Z"
 last_execute_scan: "2026-05-08"
 ---
 
@@ -26,7 +26,7 @@ last_execute_scan: "2026-05-08"
 | 1.11 | Build `Rule` primitive (h/v hairline, optional draw-in via Framer Motion)           | done        | US-004 — commit f32d833 (use client; useReducedMotion guard + @media defense in depth) |
 | 1.12 | Build `MarqueeText` primitive (CSS-only animation, reduced-motion aware)            | done        | US-005 — commit 729022b (CSS @keyframes + --duration-marquee + --animate-marquee; defense-in-depth via useReducedMotion + @media zeroing) |
 | 1.13 | TDD: write `Accordion.test.tsx`; build keyboard-accessible Accordion                | done        | US-006 — commit 41949ec (compound Accordion/Item/Trigger/Content; 13 tests; ArrowUp/Down + Home/End nav, singleOpen + multi modes, ARIA wiring) |
-| 1.14 | TDD: write `Sheet.test.tsx`; build focus-trapped Sheet                              | not-started | --    |
+| 1.14 | TDD: write `Sheet.test.tsx`; build focus-trapped Sheet                              | done        | US-007 — commit 3228124 (portal-mounted dialog; focus capture/restore; Tab/Shift+Tab focus trap; Esc + backdrop-click close; inert on body siblings; framer-motion enter w/ reduced-motion duration 0; 12 tests RED→GREEN) |
 | 1.15 | `/dev/components` showcase route (gated by NODE_ENV)                                | not-started | --    |
 | 1.16 | E2E: `tests/e2e/design-system.spec.ts` — render + tab order + axe scan              | not-started | --    |
 | 1.17 | Verify coverage ≥ 80 % on `lib/` + `hooks/`; record numbers                         | not-started | --    |
@@ -37,7 +37,7 @@ last_execute_scan: "2026-05-08"
 | -------------------------------------------------------------------------------------------- | ------- | -------- |
 | Token system in `src/app/globals.css` using Tailwind v4 `@theme`                             | done    | commit f80fd78 — :root + @theme inline + reduced-motion |
 | Font loading via `next/font` (Inter Display + JetBrains Mono with Cyrillic)                  | done    | commit 118d902 — Inter (opsz axis) + JetBrains_Mono, latin+cyrillic subsets, display: swap |
-| UI primitives: `Button`, `Tag`, `Rule`, `MarqueeText`, `Accordion`, `Sheet`                  | partial | commit f32d833 (Button + Tag + Rule), 729022b (MarqueeText), 41949ec (Accordion); Sheet pending |
+| UI primitives: `Button`, `Tag`, `Rule`, `MarqueeText`, `Accordion`, `Sheet`                  | done    | commit f32d833 (Button + Tag + Rule), 729022b (MarqueeText), 41949ec (Accordion), 3228124 (Sheet) |
 | Hooks: `useReducedMotion`, `useEscapeKey`, `useScrollProgress`                               | done    | commit e12f7df — all three under src/hooks/, 32 tests, 98.5% statements coverage |
 | TDD coverage for primitives + hooks                                                          | pending | --       |
 
@@ -70,6 +70,8 @@ None. PHASE-00 is `completed`; all dependencies satisfied.
 | 2026-05-09 | Ralph iter 3 — US-003 complete: tasks 1.5/1.6/1.7/1.8 done under strict TDD; cn() + 3 hooks; 32 tests green; coverage 98.5% stmts on src/lib/ + src/hooks/ | ai |
 | 2026-05-09 | Ralph iter 4 — US-004 complete: tasks 1.9/1.10/1.11 done; Button (server) + Tag (server) + Rule (client) under src/components/ui/; tsc/lint/build green | ai |
 | 2026-05-09 | Ralph iter 5 — US-005 complete: task 1.12 done; MarqueeText (client) under src/components/ui/ with CSS @keyframes + --duration-marquee + --animate-marquee in @theme; 8 new component tests (40 total); tsc/lint/build green | ai |
+| 2026-05-09 | Ralph iter 6 — US-006 complete: task 1.13 done; Accordion compound (client) with 2-context arch + DOM-walk keyboard nav + useId-scoped ARIA ids; 13 new tests (53 total); tsc/lint/tests green | ai |
+| 2026-05-09 | Ralph iter 7 — US-007 complete: task 1.14 done; Sheet primitive (client, portal) with focus capture/restore + Tab focus trap + inert siblings + Esc/backdrop close + framer-motion enter; 12 new tests (65 total); tsc/lint/build green | ai |
 
 ## PLAN.md Amendments
 

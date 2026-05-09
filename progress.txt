@@ -424,3 +424,120 @@
   Empty string is the canonical "value-less" data attribute. Could
   also be done with a literal `data-accordion-trigger=""` and a const
   reused only in the querySelectorAll selector.
+
+### Iteration 7 — US-007: Sheet primitive (focus-trapped, Esc-dismissable)
+**Date:** 2026-05-09T19:30Z
+**Quality Tier:** 1
+**Health Check:** PASS (53 tests passed pre-work, 0 type/lint errors)
+**Implemented (strict TDD — RED → GREEN):**
+- `src/components/ui/Sheet.tsx` — `'use client'` (uses state, refs,
+  effects, useEscapeKey, useReducedMotion, createPortal). Props
+  `SheetProps = { open, onClose, title, position?, className?, children }`
+  with default position='right'.
+- ARIA contract: outer overlay (no role) + backdrop (`<motion.div>`) +
+  panel (`<motion.div role="dialog" aria-modal="true"
+  aria-labelledby={titleId}>`). Title is an `<h2 id={titleId}>` inside
+  the panel; `useId()` gives a unique id stable across renders.
+- Focus capture/restore: useEffect on [open] captures
+  `document.activeElement` into a ref when open flips true, focuses
+  the first focusable inside the panel (or the panel itself with
+  tabIndex=-1 fallback if none). The cleanup phase (which runs when
+  open flips false) restores focus to the captured element.
+- Focus trap: panel has `onKeyDown` filter on `Tab`. Computes the
+  focusable list from a SELECTOR (a[href], button:not([disabled]),
+  input/textarea/select:not([disabled]), [tabindex]:not([tabindex="-1"]).
+  If shift+Tab on first or focus is outside panel → focus last.
+  If Tab on last or focus is outside panel → focus first.
+- Esc dismiss: `useEscapeKey(() => { if (open) onClose() })` —
+  the hook always listens but the callback no-ops while closed.
+  The hook's latest-callback-via-ref pattern (US-003) ensures the
+  current `open` is read each keypress; no stale closure.
+- Backdrop click: `onClick` on the data-sheet-backdrop element with
+  `e.target === e.currentTarget` guard so bubbled clicks from inside
+  the panel don't trigger close.
+- Inert background: useEffect on [open] grabs all body.children EXCEPT
+  the overlay (matched by ref, not querySelector — safer with multiple
+  Sheet instances), saves each sibling's prior `inert` attribute state
+  in an array, sets `inert=""` on each. Cleanup restores the prior
+  inert state per element. Solves PLAN.md risk #2 (focus leak through
+  portal mounts).
+- Framer Motion: backdrop fades from opacity:0 → 1 (duration 0.2s,
+  zeroed when reduced); panel slides from `enterFrom[position]` to
+  `{x:0,y:0}` (duration 0.3s ease-out-expo, zeroed when reduced).
+  No AnimatePresence — when open flips false, panel unmounts
+  immediately (no exit animation in this initial cut; can be layered
+  via AnimatePresence later without API break).
+- SSR safety: `if (typeof document === "undefined") return null`
+  before createPortal call. No mounted-state gate (would trip
+  react-hooks/set-state-in-effect lint rule).
+**Files changed:**
+- src/components/ui/Sheet.tsx (new, 154 lines)
+- tests/unit/components/ui/Sheet.test.tsx (new, 232 lines, 12 cases)
+**Tests:** 65 passed (12 new Sheet + 53 prior). TDD ordering: write
+  test file → import fails (RED) → implement Sheet → all 12 GREEN
+  on first run (no test refactors needed). Cases cover:
+  open=false renders nothing; ARIA dialog/aria-modal/aria-labelledby;
+  focus moves into first focusable on open; focus restores to trigger
+  on close; Escape closes (open=true) but no-ops (open=false);
+  backdrop click closes; click inside panel does NOT close;
+  Tab on last → first; Shift+Tab on first → last; inert toggles on
+  body siblings on open/close; data-reduced-motion attribute reflects
+  hook value.
+**Coverage on src/lib/ + src/hooks/:** unchanged at 98.5% statements
+  (Sheet.tsx is in src/components/ui/, outside the coverage `include`
+  glob — same as US-004/005/006).
+**Lint / Type:** `pnpm typecheck` clean; `pnpm lint` 0 errors (2
+  cosmetic warnings on coverage HTML, unchanged).
+**Build:** `pnpm build` succeeded — Turbopack compile 11.3 s,
+  TypeScript phase 1.2 s, 4 static pages prerendered (network reachable
+  this iter, unlike iter 6).
+**Secrets scan:** clean.
+**ADR-0002 grep:** `rg -n 'rounded|shadow|border-radius|box-shadow'
+  src/components/ui/Sheet.tsx` empty. Square corners, hairline edges.
+**Commit:** 3228124
+**Learnings:**
+- The mount-gate `useState(false) + useEffect(() => setMounted(true))`
+  pattern is now blocked by eslint-plugin-react-hooks v6's
+  `react-hooks/set-state-in-effect` rule. For SSR-safe portals,
+  `typeof document === "undefined"` is sufficient if consumers
+  initialize `open=false` (the realistic case) — server returns null,
+  client first render also returns null (open=false), no hydration
+  mismatch. Only edge case is `<Sheet open={true}>` on initial render,
+  which would produce a brief mismatch warning; rare enough to ignore.
+- React 19 + Next 16 'use client' components SSR by default. Any
+  reference to `document` or `window` at the top level of render must
+  be guarded. createPortal call lives behind `typeof document` check.
+- Inert-restore pattern: capture prior state per element, NOT a single
+  boolean. If a sibling already had `inert` (e.g., another modal in
+  flight), we must NOT remove it on cleanup. `previousInert =
+  siblings.map(s => s.hasAttribute("inert"))` then on cleanup
+  `if (!previousInert[i]) s.removeAttribute("inert")` is the correct
+  idempotent pattern.
+- Focus-trap selector: `[tabindex]:not([tabindex="-1"])` only matches
+  elements with an explicit tabindex attribute. Native focusables
+  (button, a[href], inputs) need their own selectors because they're
+  focusable WITHOUT an explicit tabindex. The 6-clause selector list
+  covers the common ground; for production, an `aria-hidden=true`
+  exclusion clause is a useful future addition.
+- `useEffect` cleanup phase is the elegant focus-restore site: it
+  fires on the dependency change BEFORE the new effect, and on unmount.
+  Pattern: capture in effect body, restore in returned cleanup. Works
+  symmetrically with the open: true → false transition.
+- Framer Motion's `motion.div` forwards arbitrary `data-*` attributes
+  to the DOM. Using `data-reduced-motion={reduced ? "true" : "false"}`
+  on the panel gave the test a clean, framer-internals-free assertion
+  point for "respects useReducedMotion" without depending on whether
+  framer's animation actually runs in jsdom.
+- Skipping AnimatePresence (no exit animation) avoids jsdom + framer
+  flakiness around exit-onExitComplete timing. The trade-off: no
+  visible exit transition. Acceptable for initial Sheet; AnimatePresence
+  can be layered later without breaking API.
+- `<button data-testid="x">x</button>` rendered inside a Sheet portal
+  is correctly findable via `screen.getByTestId("x")` because
+  testing-library queries `document.body` by default — and the portal
+  mounts to `document.body`. No `within(panel)` indirection needed.
+- For the inert-test, testing-library's `render` creates a fresh `<div>`
+  appended to document.body and returns its container. With the Sheet
+  portal also mounting to body, body has [tl-container, sheet-root]
+  during open. Filter `body.children` by `!hasAttribute("data-sheet-root")`
+  to assert all siblings (i.e., tl-container) get inert.
