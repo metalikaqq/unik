@@ -131,7 +131,7 @@
         "Verify in browser at /uk/tickets and /en/tickets"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Reuses Accordion + Sheet from PHASE-01. Diploma demonstrates 'comparison table + accordion + sticky CTA' (Ch.2 interactions, Ch.3 conversion).",
       "securityRelevant": false,
       "e2eRequired": true

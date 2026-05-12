@@ -259,10 +259,32 @@
       "buildStatus": "PASS",
       "timestamp": "2026-05-12T12:54:00Z",
       "phase": "diploma-frontend"
+    },
+    {
+      "iteration": 14,
+      "storyId": "US-006",
+      "tier": 1,
+      "testsRun": 145,
+      "testsPassed": 145,
+      "newTests": 10,
+      "coverage": {
+        "statements": 91.6,
+        "branches": 86.48,
+        "functions": 83.72,
+        "lines": 90.17,
+        "scope": "src/lib/ + src/hooks/ + src/i18n/ + src/content/ (3 ticket tiers + 8 FAQ entries)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "timestamp": "2026-05-12T12:57:00Z",
+      "phase": "diploma-frontend"
     }
   ],
   "summary": {
-    "storiesComplete": 5,
+    "storiesComplete": 6,
     "storiesTotal": 8,
     "currentPhase": "diploma-frontend",
     "previousPhases": ["phase-01-design-system"],
