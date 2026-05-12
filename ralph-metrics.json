@@ -214,16 +214,39 @@
       "regressionFixed": "Initial pass under threshold (branches 78.78%); added pickLocale + bilingualSchema/trackSchema tests, recovered to 84.84%.",
       "timestamp": "2026-05-12T12:45:00Z",
       "phase": "diploma-frontend"
+    },
+    {
+      "iteration": 12,
+      "storyId": "US-004",
+      "tier": 1,
+      "testsRun": 121,
+      "testsPassed": 121,
+      "newTests": 5,
+      "coverage": {
+        "statements": 91.66,
+        "branches": 86.48,
+        "functions": 85.29,
+        "lines": 90.21,
+        "scope": "src/lib/ + src/hooks/ + src/i18n/ + src/content/ (track-filter + extended speakers data)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "regressionFixed": "isFilterValue was exported from a 'use client' module and imported by the server page → 500. Extracted to src/lib/track-filter.ts (server-friendly) and re-imported from both sides.",
+      "timestamp": "2026-05-12T12:50:00Z",
+      "phase": "diploma-frontend"
     }
   ],
   "summary": {
-    "storiesComplete": 3,
+    "storiesComplete": 4,
     "storiesTotal": 8,
     "currentPhase": "diploma-frontend",
     "previousPhases": ["phase-01-design-system"],
-    "avgCoverage": 91.01,
-    "regressionsFound": 2,
-    "regressionsFixed": 2,
+    "avgCoverage": 90.21,
+    "regressionsFound": 3,
+    "regressionsFixed": 3,
     "qualityScore": null,
     "phaseHistory": {
       "phase-01-design-system": {

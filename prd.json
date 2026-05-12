@@ -88,7 +88,7 @@
         "Verify in browser at /uk/speakers and /en/speakers"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "Reuses Sheet primitive from US-007 of PHASE-01. Track filter is the diploma's 'filterable list' UX pattern (Ch.2 information architecture).",
       "securityRelevant": false,
       "e2eRequired": true

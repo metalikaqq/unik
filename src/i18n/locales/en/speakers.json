@@ -1,0 +1,25 @@
+{
+  "page": {
+    "eyebrow": "Programme / 2026",
+    "title": "Twelve voices of the conference",
+    "intro": "Design, engineering, community. Tap a name to read the full talk description."
+  },
+  "filter": {
+    "label": "Track filter",
+    "all": "All",
+    "ariaCount": "{count} speaker(s)"
+  },
+  "card": {
+    "openLabel": "Open details: {name}"
+  },
+  "sheet": {
+    "abstractHeading": "About the talk",
+    "socialHeading": "Social",
+    "trackLabel": "Track",
+    "close": "Close"
+  },
+  "empty": {
+    "title": "No confirmed names in this track yet",
+    "body": "We're still announcing. In the meantime, take a look at the other tracks."
+  }
+}

@@ -29,7 +29,7 @@ export async function SpeakerPreview({ locale }: { locale: string }) {
         className="-mx-6 flex snap-x snap-mandatory gap-[var(--space-6)] overflow-x-auto px-6 pb-[var(--space-4)] [scrollbar-width:thin]"
         aria-label={t("title")}
       >
-        {speakers.map((speaker) => (
+        {speakers.slice(0, 6).map((speaker) => (
           <li
             key={speaker.id}
             className="snap-start shrink-0 basis-[min(85%,22rem)]"

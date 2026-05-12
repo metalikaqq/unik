@@ -43,8 +43,8 @@ describe("speakerSchema", () => {
 });
 
 describe("speakers data", () => {
-  it("contains exactly six entries for the US-003 preview strip", () => {
-    expect(speakers.length).toBe(6);
+  it("contains exactly twelve entries for the US-004 speakers page", () => {
+    expect(speakers.length).toBe(12);
   });
 
   it("validates every entry against the schema", () => {
@@ -59,8 +59,11 @@ describe("speakers data", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("covers all three tracks at least once", () => {
-    const tracks = new Set(speakers.map((s) => s.track));
-    expect(tracks).toEqual(new Set(["design", "engineering", "community"]));
+  it("balances four speakers per track", () => {
+    const counts = speakers.reduce<Record<string, number>>((acc, s) => {
+      acc[s.track] = (acc[s.track] ?? 0) + 1;
+      return acc;
+    }, {});
+    expect(counts).toEqual({ design: 4, engineering: 4, community: 4 });
   });
 });
