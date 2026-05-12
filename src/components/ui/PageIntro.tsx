@@ -10,22 +10,28 @@ interface PageIntroProps {
   accent: string;
 }
 
-export function PageIntro({ eyebrow, title, subtitle, blurb, accent }: PageIntroProps) {
+export function PageIntro({
+  eyebrow,
+  title,
+  subtitle,
+  blurb,
+  accent,
+}: PageIntroProps) {
   return (
-    <section className="relative overflow-hidden pt-40 pb-24 sm:pt-48">
+    <section className="relative overflow-hidden pt-36 pb-16 sm:pt-44 sm:pb-24">
       <div
-        className="halo absolute -top-32 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2"
+        className="halo absolute -top-32 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 sm:h-[36rem] sm:w-[36rem] lg:h-[40rem] lg:w-[40rem]"
         style={{
           background: `radial-gradient(closest-side, ${accent}33, transparent 70%)`,
         }}
         aria-hidden="true"
       />
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-mono text-xs uppercase tracking-wider text-muted"
+          className="font-mono text-[11px] uppercase tracking-wider text-muted sm:text-xs"
         >
           {eyebrow}
         </motion.p>
@@ -33,7 +39,7 @@ export function PageIntro({ eyebrow, title, subtitle, blurb, accent }: PageIntro
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-          className="aurora-text mt-4 font-display text-4xl leading-tight tracking-tight md:text-display"
+          className="aurora-text mt-3 font-display text-4xl leading-tight tracking-tight sm:mt-4 sm:text-5xl md:text-display"
         >
           {title}
         </motion.h1>
@@ -41,7 +47,7 @@ export function PageIntro({ eyebrow, title, subtitle, blurb, accent }: PageIntro
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 max-w-2xl text-xl text-fg/85"
+          className="mt-5 max-w-2xl text-lg text-fg/85 sm:mt-6 sm:text-xl"
         >
           {subtitle}
         </motion.p>
@@ -49,7 +55,7 @@ export function PageIntro({ eyebrow, title, subtitle, blurb, accent }: PageIntro
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-4 max-w-2xl text-base leading-relaxed text-muted"
+          className="mt-3 max-w-2xl text-sm leading-relaxed text-muted sm:mt-4 sm:text-base"
         >
           {blurb}
         </motion.p>
