@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "eyebrow": "14–16 May 2026 / Uzhhorod, Ukraine",
+    "title": "CARPATHIAN.CONF 2026",
+    "tagline": "Three days of conversations about design, engineering, and community — in the mountains, without the noise.",
+    "ctaLabel": "Submit a talk",
+    "ctaHint": "Proposals open until 1 March"
+  },
+  "marquee": {
+    "line": "DESIGN ✦ ENGINEERING ✦ COMMUNITY ✦ CARPATHIANS ✦"
+  },
+  "cfp": {
+    "section": "Call for Proposals",
+    "title": "Submit a talk",
+    "intro": "We accept proposals until 1 March 2026. This is a demo form — nothing is stored or sent.",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Jane Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "title": {
+        "label": "Talk title",
+        "placeholder": "How we…"
+      },
+      "abstract": {
+        "label": "Abstract (50–1000 characters)",
+        "placeholder": "A short pitch — what, for whom, and why now."
+      },
+      "track": {
+        "label": "Track",
+        "placeholder": "Choose a track",
+        "options": {
+          "design": "Design",
+          "engineering": "Engineering",
+          "community": "Community"
+        }
+      }
+    },
+    "submit": "Send",
+    "submitting": "Sending…",
+    "success": {
+      "title": "Thanks! We've got your proposal.",
+      "body": "This is a demo — nothing was actually sent. You're welcome to submit another.",
+      "another": "Submit another"
+    },
+    "error": {
+      "banner": "Couldn't send. Please try again."
+    },
+    "errors": {
+      "name": {
+        "required": "Enter your name"
+      },
+      "email": {
+        "required": "Enter your email",
+        "invalid": "Please check the email format"
+      },
+      "title": {
+        "required": "Enter a talk title"
+      },
+      "abstract": {
+        "min": "The abstract must be at least 50 characters",
+        "max": "The abstract must be at most 1000 characters"
+      },
+      "track": {
+        "required": "Choose a track"
+      }
+    }
+  }
+}

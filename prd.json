@@ -44,7 +44,7 @@
         "Verify in browser at /uk and /en"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "ADR-0004 (no backend) — mock-only is intentional for diploma demo. Use Sheet primitive from PHASE-01 if showing a confirmation modal. Form is securityRelevant because it processes user input even in mock mode (validation logic must be sound).",
       "securityRelevant": true,
       "e2eRequired": true
