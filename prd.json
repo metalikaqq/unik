@@ -178,7 +178,7 @@
       ],
       "priority": 8,
       "passes": true,
-      "notes": "Closing pass complete: 32 Playwright scenarios green (5 routes × 2 locales × 3 viewports + keyboard tour + reduced-motion check) on both Chromium and Firefox; 0 serious/critical axe violations. Lighthouse CI config updated to /uk + /uk/speakers. Accent token darkened from #e63946 → #a4161a to clear WCAG AA against both --color-bg and bg-fg/15 panel separators. Text-display floor lowered from 3rem to 2rem so 'CARPATHIAN.CONF 2026' fits 375px. `vercel deploy --prod` is the only remaining step — deliberately gated on operator confirmation per CLAUDE.md (production deploys are not auto-runnable).",
+      "notes": "SHIPPED. 32 Playwright scenarios green (5 routes × 2 locales × 3 viewports + keyboard tour + reduced-motion) on Chromium + Firefox; 0 serious/critical axe violations. Lighthouse CI: perf=1.0, a11y=1.0, BP=1.0, SEO=1.0 on /uk AND /uk/speakers across two runs each. Accent token darkened from #e63946 → #a4161a (AA contrast). text-display floor lowered to 2rem (375px overflow). SpeakerGrid h3 → h2 + dropped redundant aria-label to clear Lighthouse heading-order and label-content-name-mismatch. Production deploy succeeded; canonical alias https://unik-bice.vercel.app/ serves the new build, locale redirect / → /uk verified, all 10 routes (5 × 2 locales) return 200.",
       "securityRelevant": false,
       "e2eRequired": true
     }
