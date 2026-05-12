@@ -334,10 +334,7 @@ function Label({
   children: React.ReactNode;
 }) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className="font-mono text-xs uppercase tracking-wider text-fg/85"
-    >
+    <label htmlFor={htmlFor} className="font-mono text-xs uppercase tracking-wider text-fg/85">
       {children}
       {required && (
         <span className="ml-1 text-accent" aria-hidden="true">
