@@ -14,23 +14,28 @@
 
 ## Status Board
 
-| ID       | Title                  | Status   | Est. days | Started | Completed | Confidence |
-| -------- | ---------------------- | -------- | --------- | ------- | --------- | ---------- |
-| PHASE-00 | Bootstrap & infra      | completed | 2        | 2026-05-08 | 2026-05-08 | 9          |
-| PHASE-01 | Design system + tokens | completed | 3        | 2026-05-08 | 2026-05-09 | 9.5        |
-| PHASE-02 | Shell, i18n, routing   | proposed | 3         | --      | --        | --         |
-| PHASE-03 | Home + CFP form        | proposed | 5         | --      | --        | --         |
-| PHASE-04 | Speakers page          | proposed | 3         | --      | --        | --         |
-| PHASE-05 | Schedule page          | proposed | 3         | --      | --        | --         |
-| PHASE-06 | Tickets + FAQ          | proposed | 2         | --      | --        | --         |
-| PHASE-07 | Venue page             | proposed | 2         | --      | --        | --         |
-| PHASE-08 | A11y + perf hardening  | proposed | 3         | --      | --        | --         |
-| PHASE-09 | Production deploy      | proposed | 2         | --      | --        | --         |
-| PHASE-10 | Diploma artifacts      | proposed | 2         | --      | --        | --         |
+| ID                | Title                                 | Status     | Est. days | Started    | Completed  | Confidence |
+| ----------------- | ------------------------------------- | ---------- | --------- | ---------- | ---------- | ---------- |
+| PHASE-00          | Bootstrap & infra                     | completed  | 2         | 2026-05-08 | 2026-05-08 | 9          |
+| PHASE-01          | Design system + tokens                | completed  | 3         | 2026-05-08 | 2026-05-09 | 9.5        |
+| DIPLOMA-FRONTEND  | Shell + 5 pages + a11y/perf + deploy  | active     | 10        | 2026-05-09 | --         | 8          |
+| ~~PHASE-02~~      | ~~Shell, i18n, routing~~              | superseded | --        | --         | --         | --         |
+| ~~PHASE-03~~      | ~~Home + CFP form~~                   | superseded | --        | --         | --         | --         |
+| ~~PHASE-04~~      | ~~Speakers page~~                     | superseded | --        | --         | --         | --         |
+| ~~PHASE-05~~      | ~~Schedule page~~                     | superseded | --        | --         | --         | --         |
+| ~~PHASE-06~~      | ~~Tickets + FAQ~~                     | superseded | --        | --         | --         | --         |
+| ~~PHASE-07~~      | ~~Venue page~~                        | superseded | --        | --         | --         | --         |
+| ~~PHASE-08~~      | ~~A11y + perf hardening~~             | superseded | --        | --         | --         | --         |
+| ~~PHASE-09~~      | ~~Production deploy~~                 | superseded | --        | --         | --         | --         |
+| ~~PHASE-10~~      | ~~Diploma artifacts~~                 | superseded | --        | --         | --         | --         |
 
-**Total estimate**: ~30 working days. Buffer assumed inside the March–May window.
+**Consolidation note** — On 2026-05-09, P02 through P10 were folded into a single `DIPLOMA-FRONTEND` mega-phase (see [ADR-0007](../decisions/0007-mega-phase-consolidation.md) and `prd.json` at repo root). The old phase folders (`phase-02-shell-i18n/` … `phase-10-artifacts/`) are retained as historical PLAN/SPEC artifacts but are no longer the active workstream; their exit criteria are absorbed into the mega-phase user stories (US-001 … US-008).
 
-Legend: `proposed` → `planned` → `active` → `gate` → `completed` → `retrospected`.
+**Mega-phase progress** — 1 / 8 user stories complete: US-001 i18n shell (commit `c95d202`). Remaining: US-002 Home + CFP, US-003 Home below-fold, US-004 Speakers, US-005 Schedule, US-006 Tickets + FAQ, US-007 Venue, US-008 a11y/perf + Vercel deploy.
+
+**Total estimate**: ~15 working days remaining (5 days spent on P00 + P01). Buffer assumed inside the March–May window.
+
+Legend: `proposed` → `planned` → `active` → `gate` → `completed` → `retrospected` · `superseded` = scope absorbed by a later phase.
 
 ---
 
@@ -41,23 +46,22 @@ Legend: `proposed` → `planned` → `active` → `gate` → `completed` → `re
       |
 [01 Design System]
       |
-[02 Shell + i18n]
-      |
-[03 Home + CFP] ────── ★ first Vercel deploy
-      |
-      ├── [04 Speakers]
-      ├── [05 Schedule]
-      ├── [06 Tickets + FAQ]
-      └── [07 Venue]
-              |
-        [08 A11y + Perf]
-              |
-        [09 Prod Deploy]
-              |
-        [10 Diploma Artifacts]
+[DIPLOMA-FRONTEND] ── single mega-phase ──┐
+   US-001 i18n shell              ✅      │
+   US-002 Home + CFP                      │
+   US-003 Home below-fold                 │
+   US-004 Speakers                        │
+   US-005 Schedule          (US-004…007   │
+   US-006 Tickets + FAQ      may run in   │
+   US-007 Venue              parallel)    │
+   US-008 a11y/perf + Vercel deploy ★     │
+                                          │
+                              ★ first prod deploy
 ```
 
-P04–P07 can run in parallel after P03 ships. All other phases are strictly sequential.
+US-004 through US-007 (the four page stories) may run in parallel after US-002 + US-003 ship. US-001 and US-008 are strictly sequential bookends.
+
+> **Historical dependency graph** (pre-consolidation P00 → P10 chain) is preserved in [ADR-0007](../decisions/0007-mega-phase-consolidation.md) for diploma audit-trail purposes.
 
 ---
 
@@ -86,6 +90,7 @@ See `knowledge-base/decisions/`:
 - **ADR-0004** — No backend; CFP form posts to Formspree free tier
 - **ADR-0005** — Tailwind v4 CSS-first config (no `tailwind.config.ts`)
 - **ADR-0006** — Test stack: Vitest + Playwright + axe-core + Lighthouse CI
+- **ADR-0007** — Consolidate P02–P10 into a single `DIPLOMA-FRONTEND` mega-phase
 
 ---
 
