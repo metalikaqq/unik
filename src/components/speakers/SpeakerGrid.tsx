@@ -23,7 +23,6 @@ export type SpeakerGridProps = {
 };
 
 export function SpeakerGrid({ speakers }: SpeakerGridProps) {
-  const tCard = useTranslations("speakers.card");
   const tSheet = useTranslations("speakers.sheet");
   const tEmpty = useTranslations("speakers.empty");
 
@@ -50,7 +49,6 @@ export function SpeakerGrid({ speakers }: SpeakerGridProps) {
             <button
               type="button"
               onClick={() => setActiveId(speaker.id)}
-              aria-label={tCard("openLabel", { name: speaker.name })}
               className="group flex h-full w-full flex-col gap-[var(--space-3)] p-[var(--space-6)] text-left transition-colors hover:bg-fg/4 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent"
             >
               <div
@@ -62,9 +60,9 @@ export function SpeakerGrid({ speakers }: SpeakerGridProps) {
                 }}
               />
               <Tag className="text-muted">{speaker.trackLabel}</Tag>
-              <h3 className="font-display text-lg font-medium uppercase tracking-tight">
+              <h2 className="font-display text-lg font-medium uppercase tracking-tight">
                 {speaker.name}
-              </h3>
+              </h2>
               <p className="font-mono text-xs uppercase tracking-wider text-muted">
                 {speaker.role}
               </p>

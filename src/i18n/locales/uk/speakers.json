@@ -9,9 +9,6 @@
     "all": "Усі",
     "ariaCount": "{count} спікер(ів)"
   },
-  "card": {
-    "openLabel": "Відкрити деталі: {name}"
-  },
   "sheet": {
     "abstractHeading": "Про доповідь",
     "socialHeading": "Соціальні мережі",
