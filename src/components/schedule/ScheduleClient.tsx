@@ -3,7 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/Accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/Accordion";
 import { Rule } from "@/components/ui/Rule";
 import { Tag } from "@/components/ui/Tag";
 import type { DayNumber, SessionKind } from "@/content/schedule";
@@ -114,19 +119,13 @@ export function ScheduleClient({ sessions, dayLabels, dayDates }: ScheduleClient
       </nav>
 
       {activeSessions.length === 0 ? (
-        <p className="font-mono text-sm uppercase tracking-wider text-muted">
-          {tEmpty("empty")}
-        </p>
+        <p className="font-mono text-sm uppercase tracking-wider text-muted">{tEmpty("empty")}</p>
       ) : (
         <Accordion singleOpen className="border-t border-fg/15">
           {activeSessions.map((session) => {
             const isOpen = openSessionId === session.id;
             return (
-              <AccordionItem
-                key={session.id}
-                itemId={session.id}
-                className="border-fg/15"
-              >
+              <AccordionItem key={session.id} itemId={session.id} className="border-fg/15">
                 <a
                   id={`session-${session.id}`}
                   aria-hidden="true"
@@ -146,8 +145,8 @@ export function ScheduleClient({ sessions, dayLabels, dayDates }: ScheduleClient
                         {session.title}
                       </span>
                       <span className="font-mono text-xs uppercase tracking-wider text-muted">
-                        {session.speakers.map((s) => s.name).join(", ")} ·{" "}
-                        {tSession("in")} {session.room}
+                        {session.speakers.map((s) => s.name).join(", ")} · {tSession("in")}{" "}
+                        {session.room}
                       </span>
                     </span>
                     <Tag className="text-accent">{tSession(`kind.${session.kind}`)}</Tag>
@@ -176,9 +175,7 @@ export function ScheduleClient({ sessions, dayLabels, dayDates }: ScheduleClient
         </Accordion>
       )}
 
-      <p className="font-mono text-xs uppercase tracking-wider text-muted">
-        {dayDates[activeDay]}
-      </p>
+      <p className="font-mono text-xs uppercase tracking-wider text-muted">{dayDates[activeDay]}</p>
     </div>
   );
 }

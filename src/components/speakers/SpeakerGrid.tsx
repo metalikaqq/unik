@@ -29,7 +29,7 @@ export function SpeakerGrid({ speakers }: SpeakerGridProps) {
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const active = activeId ? speakers.find((s) => s.id === activeId) ?? null : null;
+  const active = activeId ? (speakers.find((s) => s.id === activeId) ?? null) : null;
 
   if (speakers.length === 0) {
     return (
@@ -74,11 +74,7 @@ export function SpeakerGrid({ speakers }: SpeakerGridProps) {
         ))}
       </ul>
 
-      <Sheet
-        open={active !== null}
-        onClose={() => setActiveId(null)}
-        title={active?.name ?? ""}
-      >
+      <Sheet open={active !== null} onClose={() => setActiveId(null)} title={active?.name ?? ""}>
         {active && (
           <div className="flex flex-col gap-[var(--space-4)] text-base leading-relaxed">
             <div className="flex items-center gap-[var(--space-3)]">
@@ -91,7 +87,10 @@ export function SpeakerGrid({ speakers }: SpeakerGridProps) {
             <h3 className="font-display text-xl font-medium uppercase leading-tight tracking-tight">
               {active.talkTitle}
             </h3>
-            <section aria-labelledby={`abstract-${active.id}`} className="flex flex-col gap-[var(--space-2)]">
+            <section
+              aria-labelledby={`abstract-${active.id}`}
+              className="flex flex-col gap-[var(--space-2)]"
+            >
               <h4
                 id={`abstract-${active.id}`}
                 className="font-mono text-xs uppercase tracking-wider text-muted"

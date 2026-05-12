@@ -5,20 +5,14 @@ import { DAY_NUMBERS, formatDayDate, schedule } from "@/content/schedule";
 import { speakers } from "@/content/speakers";
 import { pickLocale } from "@/content/types";
 
-export default async function SchedulePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function SchedulePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   const tPage = await getTranslations("schedule.page");
   const tTracks = await getTranslations("common.tracks");
 
-  const speakerLookup = new Map(
-    speakers.map((s) => [s.id, pickLocale(s.name, locale)] as const)
-  );
+  const speakerLookup = new Map(speakers.map((s) => [s.id, pickLocale(s.name, locale)] as const));
 
   const sessions = schedule.map((s) => ({
     id: s.id,

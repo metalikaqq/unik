@@ -55,10 +55,7 @@ export default async function SpeakersPage({ params, searchParams }: SpeakersPag
 
       <div className="flex items-center justify-between gap-[var(--space-4)]">
         <TrackFilter active={active} labels={filterLabels} ariaLabel={tFilter("label")} />
-        <p
-          aria-live="polite"
-          className="font-mono text-xs uppercase tracking-wider text-muted"
-        >
+        <p aria-live="polite" className="font-mono text-xs uppercase tracking-wider text-muted">
           {tFilter("ariaCount", { count: filtered.length })}
         </p>
       </div>

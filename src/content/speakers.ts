@@ -156,7 +156,10 @@ const data: Speaker[] = [
   {
     id: "olha-tkachuk",
     name: { uk: "Ольга Ткачук", en: "Olha Tkachuk" },
-    role: { uk: "Web-perf інженерка, Polonyna Cloud", en: "Web performance engineer, Polonyna Cloud" },
+    role: {
+      uk: "Web-perf інженерка, Polonyna Cloud",
+      en: "Web performance engineer, Polonyna Cloud",
+    },
     talkTitle: {
       uk: "INP — це новий LCP",
       en: "INP is the new LCP",

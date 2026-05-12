@@ -57,4 +57,3 @@ export function TrackFilter({ active, labels, ariaLabel }: TrackFilterProps) {
     </nav>
   );
 }
-

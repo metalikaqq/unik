@@ -30,10 +30,7 @@ export async function SpeakerPreview({ locale }: { locale: string }) {
         aria-label={t("title")}
       >
         {speakers.slice(0, 6).map((speaker) => (
-          <li
-            key={speaker.id}
-            className="snap-start shrink-0 basis-[min(85%,22rem)]"
-          >
+          <li key={speaker.id} className="snap-start shrink-0 basis-[min(85%,22rem)]">
             <Link
               href="/speakers"
               className="group flex h-full flex-col gap-[var(--space-3)] border border-fg/15 bg-bg p-[var(--space-4)] transition-colors hover:border-fg focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"

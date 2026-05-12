@@ -6,11 +6,7 @@ import { Rule } from "@/components/ui/Rule";
 import { pickLocale } from "@/content/types";
 import { venue } from "@/content/venue";
 
-export default async function VenuePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function VenuePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 

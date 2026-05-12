@@ -37,7 +37,7 @@ export function Gallery({ photos }: GalleryProps) {
   const tSheet = useTranslations("venue.sheet");
 
   const [activeId, setActiveId] = useState<string | null>(null);
-  const active = activeId ? photos.find((p) => p.id === activeId) ?? null : null;
+  const active = activeId ? (photos.find((p) => p.id === activeId) ?? null) : null;
 
   return (
     <>
@@ -66,11 +66,7 @@ export function Gallery({ photos }: GalleryProps) {
         ))}
       </ul>
 
-      <Sheet
-        open={active !== null}
-        onClose={() => setActiveId(null)}
-        title={active?.caption ?? ""}
-      >
+      <Sheet open={active !== null} onClose={() => setActiveId(null)} title={active?.caption ?? ""}>
         {active && (
           <div className="flex flex-col gap-[var(--space-4)]">
             <img

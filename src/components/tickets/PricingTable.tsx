@@ -83,11 +83,7 @@ export function PricingTable({ tiers }: PricingTableProps) {
         ))}
       </ul>
 
-      <Sheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        title={t("soon.title")}
-      >
+      <Sheet open={sheetOpen} onClose={() => setSheetOpen(false)} title={t("soon.title")}>
         <div className="flex flex-col gap-[var(--space-4)]">
           <p className="text-base leading-relaxed text-fg/85">{t("soon.body")}</p>
           <button

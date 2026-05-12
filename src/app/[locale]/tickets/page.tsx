@@ -7,11 +7,7 @@ import { Rule } from "@/components/ui/Rule";
 import { faqEntries, ticketTiers } from "@/content/tickets";
 import { pickLocale } from "@/content/types";
 
-export default async function TicketsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function TicketsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
@@ -52,10 +48,7 @@ export default async function TicketsPage({
 
         <Rule className="my-[var(--space-8)]" />
 
-        <section
-          aria-labelledby="faq-heading"
-          className="flex flex-col gap-[var(--space-6)]"
-        >
+        <section aria-labelledby="faq-heading" className="flex flex-col gap-[var(--space-6)]">
           <header className="flex flex-col gap-[var(--space-3)]">
             <p className="font-mono text-xs uppercase tracking-wider text-muted">
               {tFaq("eyebrow")}
