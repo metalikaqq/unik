@@ -1,0 +1,22 @@
+{
+  "page": {
+    "eyebrow": "Programme",
+    "title": "Three days in the Carpathians",
+    "intro": "May 14, 15, and 16. Tap a session to read its description. Every session has a permanent link."
+  },
+  "tabs": {
+    "label": "Day selector",
+    "day": "Day {n}"
+  },
+  "session": {
+    "in": "in",
+    "with": "With",
+    "kind": {
+      "keynote": "Keynote",
+      "talk": "Talk",
+      "panel": "Panel"
+    },
+    "anchor": "Direct link"
+  },
+  "empty": "This day is empty for now."
+}

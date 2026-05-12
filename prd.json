@@ -110,7 +110,7 @@
         "Verify in browser at /uk/schedule and /en/schedule, test deep-link to a specific session"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "Reuses Accordion primitive from US-006 of PHASE-01. Diploma demonstrates 'tabs + expandable rows + anchor deep-links' (Ch.2 interactions).",
       "securityRelevant": false,
       "e2eRequired": true
