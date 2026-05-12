@@ -93,7 +93,7 @@ test.describe("US-007 Sheet primitive", () => {
     await page.keyboard.press("Tab");
     const isInsidePanelAfterFirstTab = await page.evaluate(() => {
       const active = document.activeElement;
-      const panel = document.querySelector('[data-sheet-panel]');
+      const panel = document.querySelector("[data-sheet-panel]");
       return Boolean(panel && active && panel.contains(active));
     });
     expect(isInsidePanelAfterFirstTab).toBe(true);
@@ -102,7 +102,7 @@ test.describe("US-007 Sheet primitive", () => {
     await page.keyboard.press("Tab");
     const isInsidePanelAfterSecondTab = await page.evaluate(() => {
       const active = document.activeElement;
-      const panel = document.querySelector('[data-sheet-panel]');
+      const panel = document.querySelector("[data-sheet-panel]");
       return Boolean(panel && active && panel.contains(active));
     });
     expect(isInsidePanelAfterSecondTab).toBe(true);
@@ -112,7 +112,7 @@ test.describe("US-007 Sheet primitive", () => {
     await page.keyboard.press("Shift+Tab");
     const isInsidePanelAfterShiftTab = await page.evaluate(() => {
       const active = document.activeElement;
-      const panel = document.querySelector('[data-sheet-panel]');
+      const panel = document.querySelector("[data-sheet-panel]");
       return Boolean(panel && active && panel.contains(active));
     });
     expect(isInsidePanelAfterShiftTab).toBe(true);

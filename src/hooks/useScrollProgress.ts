@@ -5,7 +5,7 @@ import { type RefObject, useEffect, useState } from "react";
 const THRESHOLD_STEPS = 100;
 const THRESHOLDS: number[] = Array.from(
   { length: THRESHOLD_STEPS + 1 },
-  (_, i) => i / THRESHOLD_STEPS,
+  (_, i) => i / THRESHOLD_STEPS
 );
 
 function clamp01(value: number): number {
@@ -25,9 +25,7 @@ function progressFromEntry(entry: IntersectionObserverEntry): number {
   return clamp01((rootBounds.height - rect.top) / denom);
 }
 
-export function useScrollProgress(
-  ref: RefObject<HTMLElement | null>,
-): number {
+export function useScrollProgress(ref: RefObject<HTMLElement | null>): number {
   const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export function useScrollProgress(
         if (!entry) return;
         setProgress(progressFromEntry(entry));
       },
-      { threshold: THRESHOLDS },
+      { threshold: THRESHOLDS }
     );
 
     observer.observe(target);

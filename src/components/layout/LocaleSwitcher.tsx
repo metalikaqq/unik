@@ -40,15 +40,11 @@ export function LocaleSwitcher() {
               }}
               className={cn(
                 "px-1 transition-colors focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                isActive
-                  ? "text-fg"
-                  : "text-muted hover:text-accent disabled:opacity-60"
+                isActive ? "text-fg" : "text-muted hover:text-accent disabled:opacity-60"
               )}
             >
               {locale === "uk" ? t("ukShort") : t("enShort")}
-              <span className="sr-only">
-                {locale === "uk" ? ` — ${t("uk")}` : ` — ${t("en")}`}
-              </span>
+              <span className="sr-only">{locale === "uk" ? ` — ${t("uk")}` : ` — ${t("en")}`}</span>
             </button>
           </span>
         );

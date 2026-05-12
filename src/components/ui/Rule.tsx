@@ -24,20 +24,10 @@ export function Rule({
   const reduced = useReducedMotion();
   const isHorizontal = orientation === "horizontal";
 
-  const baseClass = cn(
-    "block bg-fg",
-    isHorizontal ? "h-px w-full" : "w-px h-full",
-    className,
-  );
+  const baseClass = cn("block bg-fg", isHorizontal ? "h-px w-full" : "w-px h-full", className);
 
   if (!drawIn || reduced) {
-    return (
-      <div
-        role="separator"
-        aria-orientation={orientation}
-        className={baseClass}
-      />
-    );
+    return <div role="separator" aria-orientation={orientation} className={baseClass} />;
   }
 
   const initial = isHorizontal ? { scaleX: 0 } : { scaleY: 0 };

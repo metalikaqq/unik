@@ -23,10 +23,7 @@ export function MarqueeText({ children, className, copies = 3, ...rest }: Marque
     <div className={cn("overflow-hidden whitespace-nowrap", className)} {...rest}>
       <div
         data-marquee-track
-        className={cn(
-          "inline-flex w-max gap-[var(--space-12)]",
-          !reduced && "animate-marquee",
-        )}
+        className={cn("inline-flex w-max gap-[var(--space-12)]", !reduced && "animate-marquee")}
       >
         {segments.map((_, i) => (
           <span key={i} aria-hidden={i === 0 ? undefined : true}>

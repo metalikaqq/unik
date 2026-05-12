@@ -28,10 +28,7 @@ function installMockIO() {
     private cb: IntersectionObserverCallback;
     private record: CapturedObserver;
 
-    constructor(
-      cb: IntersectionObserverCallback,
-      options?: IntersectionObserverInit,
-    ) {
+    constructor(cb: IntersectionObserverCallback, options?: IntersectionObserverInit) {
       this.cb = cb;
       this.thresholds = Array.isArray(options?.threshold)
         ? (options!.threshold as number[])
@@ -49,7 +46,7 @@ function installMockIO() {
         fire: (entries) => {
           this.cb(
             entries.map((e) => e as IntersectionObserverEntry),
-            this as unknown as IntersectionObserver,
+            this as unknown as IntersectionObserver
           );
         },
         takeRecords: () => [],
@@ -92,7 +89,7 @@ function restoreIO() {
 function makeEntry(
   topPx: number,
   heightPx: number,
-  viewportHeightPx: number,
+  viewportHeightPx: number
 ): Partial<IntersectionObserverEntry> {
   const visibleTop = Math.max(topPx, 0);
   const visibleBottom = Math.min(topPx + heightPx, viewportHeightPx);
@@ -151,9 +148,7 @@ describe("useScrollProgress()", () => {
 
     expect(captured.length).toBeGreaterThanOrEqual(1);
 
-    const scrollAdds = scrollSpy.mock.calls.filter(
-      ([event]) => event === "scroll",
-    );
+    const scrollAdds = scrollSpy.mock.calls.filter(([event]) => event === "scroll");
     expect(scrollAdds).toHaveLength(0);
   });
 

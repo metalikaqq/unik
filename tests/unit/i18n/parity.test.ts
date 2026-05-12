@@ -5,13 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { routing } from "@/i18n/routing";
 
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | { [k: string]: JsonValue }
-  | JsonValue[];
+type JsonValue = string | number | boolean | null | { [k: string]: JsonValue } | JsonValue[];
 
 const LOCALES_ROOT = join(process.cwd(), "src/i18n/locales");
 
@@ -29,11 +23,7 @@ function listJsonFiles(dir: string): string[] {
 }
 
 function isPlainObject(value: JsonValue): value is { [k: string]: JsonValue } {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value)
-  );
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function collectKeys(value: JsonValue, prefix = ""): string[] {
@@ -97,14 +87,8 @@ describe("locale parity", () => {
         if (!refKeys) continue;
         const missing = refKeys.filter((k) => !keys.includes(k));
         const extra = keys.filter((k) => !refKeys.includes(k));
-        expect(
-          missing,
-          `${locale}/${ns} missing keys present in default locale`
-        ).toEqual([]);
-        expect(
-          extra,
-          `${locale}/${ns} has extra keys not present in default locale`
-        ).toEqual([]);
+        expect(missing, `${locale}/${ns} missing keys present in default locale`).toEqual([]);
+        expect(extra, `${locale}/${ns} has extra keys not present in default locale`).toEqual([]);
       }
     }
   });

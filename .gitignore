@@ -39,6 +39,19 @@ yarn-error.log*
 # vercel
 .vercel
 
+# ralph autonomous-loop runtime
+.ralph/
+.ralph-archive/
+.ralph-context.json
+.ralph-heartbeat.json
+.ralph-iteration-end.json
+.ralph-last-branch
+.ralph-launch.log
+.ralph-progress-recent.txt
+
+# maestro daemon runtime (logs/events — keep .maestro-commands/ tracked)
+.maestro/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

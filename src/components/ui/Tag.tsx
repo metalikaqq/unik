@@ -10,10 +10,7 @@ export function Tag({ className, ref, ...props }: TagProps) {
   return (
     <span
       ref={ref}
-      className={cn(
-        "inline-block font-mono uppercase text-xs tracking-wider",
-        className,
-      )}
+      className={cn("inline-block font-mono uppercase text-xs tracking-wider", className)}
       {...props}
     />
   );

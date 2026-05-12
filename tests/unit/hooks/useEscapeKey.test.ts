@@ -41,9 +41,7 @@ describe("useEscapeKey()", () => {
 
     unmount();
 
-    const removedKeydown = removeSpy.mock.calls.find(
-      ([event]) => event === "keydown",
-    );
+    const removedKeydown = removeSpy.mock.calls.find(([event]) => event === "keydown");
     expect(removedKeydown).toBeDefined();
     expect(removedKeydown?.[1]).toBe(addedKeydown?.[1]);
 
@@ -54,10 +52,9 @@ describe("useEscapeKey()", () => {
   it("uses the latest callback when it changes between renders", () => {
     const first = vi.fn();
     const second = vi.fn();
-    const { rerender } = renderHook(
-      ({ cb }: { cb: () => void }) => useEscapeKey(cb),
-      { initialProps: { cb: first } },
-    );
+    const { rerender } = renderHook(({ cb }: { cb: () => void }) => useEscapeKey(cb), {
+      initialProps: { cb: first },
+    });
 
     fireKey("Escape");
     expect(first).toHaveBeenCalledTimes(1);

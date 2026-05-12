@@ -93,15 +93,9 @@ describe("useReducedMotion()", () => {
   it("removes the change listener on unmount", () => {
     const { mql } = createMatchMedia(false);
     const { unmount } = renderHook(() => useReducedMotion());
-    expect(mql.addEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function),
-    );
+    expect(mql.addEventListener).toHaveBeenCalledWith("change", expect.any(Function));
     unmount();
-    expect(mql.removeEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function),
-    );
+    expect(mql.removeEventListener).toHaveBeenCalledWith("change", expect.any(Function));
     const addedListener = mql.addEventListener.mock.calls[0]?.[1];
     const removedListener = mql.removeEventListener.mock.calls[0]?.[1];
     expect(removedListener).toBe(addedListener);

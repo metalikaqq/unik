@@ -12,12 +12,8 @@ export async function Footer() {
   return (
     <footer className="border-t border-fg/15">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-mono uppercase tracking-wider text-muted">
-          {t("copyright")}
-        </p>
-        <p className="font-mono uppercase tracking-wider text-muted">
-          {t("tagline")}
-        </p>
+        <p className="font-mono uppercase tracking-wider text-muted">{t("copyright")}</p>
+        <p className="font-mono uppercase tracking-wider text-muted">{t("tagline")}</p>
         <ul className="flex items-center gap-4 font-mono uppercase tracking-wider">
           {SOCIAL_LINKS.map((link) => (
             <li key={link.key}>

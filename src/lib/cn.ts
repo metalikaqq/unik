@@ -1,10 +1,4 @@
-export type ClassValue =
-  | string
-  | number
-  | false
-  | null
-  | undefined
-  | ClassValue[];
+export type ClassValue = string | number | false | null | undefined | ClassValue[];
 
 export function cn(...inputs: ClassValue[]): string {
   const tokens: string[] = [];

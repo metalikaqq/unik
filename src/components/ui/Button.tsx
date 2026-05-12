@@ -41,7 +41,7 @@ export function Button({
         "disabled:opacity-50 disabled:cursor-not-allowed",
         sizeClasses[size],
         variantClasses[variant],
-        className,
+        className
       )}
       {...props}
     />
