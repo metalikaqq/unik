@@ -303,16 +303,42 @@
       "buildStatus": "PASS",
       "timestamp": "2026-05-12T13:01:00Z",
       "phase": "diploma-frontend"
+    },
+    {
+      "iteration": 16,
+      "storyId": "US-008",
+      "tier": 3,
+      "testsRun": 152,
+      "testsPassed": 152,
+      "newTests": 0,
+      "e2eTestsRun": 32,
+      "e2eTestsPassed": 32,
+      "coverage": {
+        "statements": 91.3,
+        "branches": 86.48,
+        "functions": 81.81,
+        "lines": 89.91,
+        "scope": "src/lib/ + src/hooks/ + src/i18n/ + src/content/ (no new content; closing pass)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "regressionFixed": "Two a11y issues found during the final e2e pass — (1) accent #e63946 only 3.98:1 on body bg, failing WCAG AA on Tag labels; darkened to #a4161a; (2) Hero h1 'CARPATHIAN.CONF 2026' overflowed 375px at the 3rem text-display floor; clamp lowered to 2rem + break-words.",
+      "timestamp": "2026-05-12T13:11:00Z",
+      "phase": "diploma-frontend",
+      "deployStatus": "PENDING_OPERATOR_CONFIRMATION"
     }
   ],
   "summary": {
-    "storiesComplete": 7,
+    "storiesComplete": 8,
     "storiesTotal": 8,
     "currentPhase": "diploma-frontend",
     "previousPhases": ["phase-01-design-system"],
     "avgCoverage": 90.21,
-    "regressionsFound": 3,
-    "regressionsFixed": 3,
+    "regressionsFound": 5,
+    "regressionsFixed": 5,
     "qualityScore": null,
     "phaseHistory": {
       "phase-01-design-system": {

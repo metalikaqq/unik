@@ -6,10 +6,17 @@
  * No --radius, no --shadow: discipline by absence.
  */
 :root {
-  /* Color: B/W + Carpathian red accent */
+  /* Color: B/W + Carpathian red accent.
+   * --color-accent moved from the original brand #e63946 (3.98:1 on body bg —
+   * fails WCAG AA for small text) to #a4161a, which clears AA both on
+   * --color-bg (~7.5:1) AND on the bg-fg/15 panel-divider colour (~5.5:1)
+   * that emerges from gap-px grids. The deeper Carpathian poppy keeps the
+   * brand identity while letting the design system honour the 'accessibility
+   * = 100' diploma target.
+   */
   --color-bg: #fafaf7;
   --color-fg: #0a0a0a;
-  --color-accent: #e63946;
+  --color-accent: #a4161a;
   --color-muted: #6b6b6b;
 
   /* Type scale */
@@ -22,7 +29,7 @@
   --text-2xl: 2rem;
   --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 3rem);
   --text-4xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
-  --text-display: clamp(3rem, 1rem + 7vw, 8rem);
+  --text-display: clamp(2rem, 0.5rem + 7vw, 8rem);
 
   --leading-tight: 1.1;
   --leading-snug: 1.25;

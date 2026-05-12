@@ -12,7 +12,7 @@ export async function SpeakerPreview({ locale }: { locale: string }) {
   return (
     <section
       aria-labelledby="speaker-preview-heading"
-      className="mx-auto flex w-full max-w-6xl flex-col gap-[var(--space-8)] px-6 py-[var(--space-section)]"
+      className="mx-auto flex w-full max-w-6xl flex-col gap-[var(--space-8)] overflow-x-clip px-6 py-[var(--space-section)]"
     >
       <header className="flex flex-col gap-[var(--space-3)]">
         <p className="font-mono text-xs uppercase tracking-wider text-muted">{t("eyebrow")}</p>
@@ -26,7 +26,7 @@ export async function SpeakerPreview({ locale }: { locale: string }) {
       </header>
 
       <ul
-        className="-mx-6 flex snap-x snap-mandatory gap-[var(--space-6)] overflow-x-auto px-6 pb-[var(--space-4)] [scrollbar-width:thin]"
+        className="flex snap-x snap-mandatory gap-[var(--space-6)] overflow-x-auto pb-[var(--space-4)] [scrollbar-width:thin]"
         aria-label={t("title")}
       >
         {speakers.slice(0, 6).map((speaker) => (

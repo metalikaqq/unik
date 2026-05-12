@@ -11,7 +11,7 @@ export async function Hero() {
       <p className="font-mono text-xs uppercase tracking-wider text-muted">{t("eyebrow")}</p>
       <h1
         id="hero-heading"
-        className="font-display text-display font-medium uppercase leading-tight tracking-tight"
+        className="font-display text-display font-medium uppercase leading-tight tracking-tight break-words"
       >
         {t("title")}
       </h1>
