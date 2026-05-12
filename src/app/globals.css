@@ -1,23 +1,19 @@
 @import "tailwindcss";
 
-/*
- * Design tokens — Swiss-rigorous brutalism (ADR-0002).
- * Single source of truth for color, type, space, motion, z-index.
- * No --radius, no --shadow: discipline by absence.
- */
 :root {
-  /* Color: B/W + Carpathian red accent.
-   * --color-accent moved from the original brand #e63946 (3.98:1 on body bg —
-   * fails WCAG AA for small text) to #a4161a, which clears AA both on
-   * --color-bg (~7.5:1) AND on the bg-fg/15 panel-divider colour (~5.5:1)
-   * that emerges from gap-px grids. The deeper Carpathian poppy keeps the
-   * brand identity while letting the design system honour the 'accessibility
-   * = 100' diploma target.
-   */
-  --color-bg: #fafaf7;
-  --color-fg: #0a0a0a;
-  --color-accent: #a4161a;
-  --color-muted: #6b6b6b;
+  /* Deep-space palette */
+  --color-bg: #03020a;
+  --color-bg-elevated: #0a0916;
+  --color-fg: #f4f3ff;
+  --color-muted: #8a8aa3;
+  --color-dim: #4a4a66;
+
+  /* Cosmic accents */
+  --color-cyan: #6dd5ff;
+  --color-magenta: #ff5edb;
+  --color-violet: #8b5cff;
+  --color-amber: #ffb86b;
+  --color-aurora: #5eead4;
 
   /* Type scale */
   --text-xs: 0.75rem;
@@ -27,21 +23,21 @@
   --text-lg: 1.25rem;
   --text-xl: 1.5rem;
   --text-2xl: 2rem;
-  --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 3rem);
-  --text-4xl: clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
-  --text-display: clamp(2rem, 0.5rem + 7vw, 8rem);
+  --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+  --text-4xl: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+  --text-display: clamp(3rem, 0.5rem + 9vw, 10rem);
 
-  --leading-tight: 1.1;
-  --leading-snug: 1.25;
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
   --leading-normal: 1.5;
   --leading-relaxed: 1.7;
 
-  --tracking-tight: -0.02em;
+  --tracking-tight: -0.03em;
   --tracking-normal: 0;
-  --tracking-wide: 0.05em;
-  --tracking-wider: 0.1em;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.18em;
 
-  /* Space scale (4 px base) */
+  /* Space scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -52,42 +48,35 @@
   --space-16: 4rem;
   --space-24: 6rem;
   --space-32: 8rem;
-  --space-block: clamp(2rem, 1rem + 3vw, 4rem);
-  --space-section: clamp(4rem, 3rem + 5vw, 10rem);
+  --space-section: clamp(5rem, 3rem + 6vw, 12rem);
 
-  /* Motion (zeroed by reduced-motion @media below) */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 500ms;
-  --duration-deliberate: 700ms;
-  --duration-marquee: 30s;
+  /* Motion */
+  --duration-fast: 200ms;
+  --duration-base: 400ms;
+  --duration-slow: 800ms;
+  --duration-deliberate: 1400ms;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Z-index layers */
+  --z-canvas: -1;
   --z-base: 0;
   --z-sticky: 10;
   --z-overlay: 20;
-  --z-sheet: 30;
   --z-modal: 40;
-  --z-toast: 50;
 }
 
-/*
- * Tailwind v4 alias block (ADR-0005).
- * Maps :root CSS vars into Tailwind's theme namespaces so utilities
- * like bg-bg, text-fg, text-display, duration-fast, z-sheet exist.
- * `inline` keeps the var() reference in generated CSS so :root is the
- * runtime authority and reduced-motion / future theming can override.
- */
 @theme inline {
-  /* Colors → bg-*, text-*, border-*, ring-* */
   --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
   --color-fg: var(--color-fg);
-  --color-accent: var(--color-accent);
   --color-muted: var(--color-muted);
+  --color-dim: var(--color-dim);
+  --color-cyan: var(--color-cyan);
+  --color-magenta: var(--color-magenta);
+  --color-violet: var(--color-violet);
+  --color-amber: var(--color-amber);
+  --color-aurora: var(--color-aurora);
 
-  /* Type → text-* */
   --text-xs: var(--text-xs);
   --text-sm: var(--text-sm);
   --text-base: var(--text-base);
@@ -99,90 +88,195 @@
   --text-4xl: var(--text-4xl);
   --text-display: var(--text-display);
 
-  /* Leading → leading-* */
   --leading-tight: var(--leading-tight);
   --leading-snug: var(--leading-snug);
   --leading-normal: var(--leading-normal);
   --leading-relaxed: var(--leading-relaxed);
 
-  /* Tracking → tracking-* */
   --tracking-tight: var(--tracking-tight);
   --tracking-normal: var(--tracking-normal);
   --tracking-wide: var(--tracking-wide);
   --tracking-wider: var(--tracking-wider);
 
-  /* Motion → duration-*, ease-* */
   --duration-fast: var(--duration-fast);
   --duration-base: var(--duration-base);
   --duration-slow: var(--duration-slow);
   --duration-deliberate: var(--duration-deliberate);
-  --duration-marquee: var(--duration-marquee);
   --ease-out-expo: var(--ease-out-expo);
   --ease-in-out: var(--ease-in-out);
 
-  /* Animations → animate-* (Tailwind v4 generates utilities from --animate-* tokens) */
-  --animate-marquee: marquee var(--duration-marquee) linear infinite;
+  --animate-drift: drift 32s linear infinite;
+  --animate-pulse-glow: pulse-glow 4s ease-in-out infinite;
+  --animate-shimmer: shimmer 8s linear infinite;
 
-  /* Z-index → z-* */
-  --z-base: var(--z-base);
-  --z-sticky: var(--z-sticky);
-  --z-overlay: var(--z-overlay);
-  --z-sheet: var(--z-sheet);
-  --z-modal: var(--z-modal);
-  --z-toast: var(--z-toast);
-
-  /*
-   * Fonts (US-002).
-   * next/font sets --font-inter and --font-jetbrains-mono on <html> via the
-   * className applied in layout.tsx. We alias them here to the
-   * design-system-facing token names --font-display and --font-mono so
-   * primitives consume tokens, never raw next/font slot names.
-   */
   --font-display: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }
 
-/*
- * Reduced motion (a11y baseline).
- * Zero out durations at the :root level — every primitive that consumes
- * --duration-* (CSS keyframes, Framer Motion via CSS vars) auto-zeroes
- * without per-component code.
- */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
     --duration-deliberate: 0ms;
-    --duration-marquee: 0s;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
-/*
- * Marquee keyframes — translateX(0) → translateX(-50%).
- * The track contains N copies of the content laid out inline; translating
- * by half the track width brings copy #2 to the position copy #1 started
- * in, producing a seamless loop. Duration is var(--duration-marquee) so
- * the @media reduced-motion block above zeroes it (defense in depth — the
- * MarqueeText component also conditionally omits the animate-marquee class
- * via useReducedMotion()).
- */
-@keyframes marquee {
+@keyframes drift {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    filter: blur(40px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(60px);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+html,
 body {
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-display);
-  /* Activate Inter's opsz axis so headings render with the "Display"
-     optical-size variant automatically based on font-size. */
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(139, 92, 255, 0.18) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 110%,
+      rgba(109, 213, 255, 0.12) 0%,
+      transparent 60%
+    ),
+    var(--color-bg);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-cyan);
+  color: var(--color-bg);
+}
+
+/* Scrollbar (Webkit) — slim, on-brand */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-violet), var(--color-cyan));
+  border-radius: 9999px;
+  border: 2px solid var(--color-bg);
+}
+
+/* Display heading utility — variable Inter w/ optical sizing */
+.font-display {
+  font-family: var(--font-display);
+  font-feature-settings:
+    "ss01" on,
+    "cv11" on;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Glass surface */
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-strong {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Aurora text — gradient title fill */
+.aurora-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-cyan) 0%,
+    var(--color-fg) 35%,
+    var(--color-magenta) 75%,
+    var(--color-violet) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+/* Halo glow for hero blob */
+.halo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(139, 92, 255, 0.4),
+    transparent 70%
+  );
+  animation: var(--animate-pulse-glow);
+}
+
+/* Hairline */
+.hairline {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
 }

@@ -1,30 +1,86 @@
-import { getTranslations } from "next-intl/server";
+"use client";
 
-export async function Hero() {
-  const t = await getTranslations("home.hero");
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+
+export function Hero() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const subY = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   return (
     <section
-      aria-labelledby="hero-heading"
-      className="mx-auto flex w-full max-w-6xl flex-col gap-[var(--space-8)] px-6 pb-[var(--space-section)] pt-[var(--space-16)]"
+      ref={ref}
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-20 sm:px-10"
     >
-      <p className="font-mono text-xs uppercase tracking-wider text-muted">{t("eyebrow")}</p>
-      <h1
-        id="hero-heading"
-        className="font-display text-display font-medium uppercase leading-tight tracking-tight break-words"
+      <motion.div
+        style={{ y: titleY, opacity: titleOpacity }}
+        className="relative z-10 mx-auto max-w-6xl text-center"
       >
-        {t("title")}
-      </h1>
-      <p className="max-w-3xl text-md leading-relaxed text-fg/85 md:text-lg">{t("tagline")}</p>
-      <div className="flex flex-col items-start gap-[var(--space-3)] pt-[var(--space-2)]">
-        <a
-          href="#cfp"
-          className="inline-flex items-center justify-center bg-fg px-6 py-3 font-display text-lg font-medium uppercase tracking-wide text-bg transition-colors hover:bg-accent focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="font-mono text-xs uppercase tracking-wider text-muted"
         >
-          {t("ctaLabel")}
-        </a>
-        <p className="font-mono text-xs uppercase tracking-wider text-muted">{t("ctaHint")}</p>
-      </div>
+          An atlas of the observable universe
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="aurora-text mt-6 font-display text-display leading-tight tracking-tight"
+        >
+          Cosmos
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-fg/85 md:text-xl"
+        >
+          Two trillion galaxies. A hundred billion stars in each. Forty-six billion light-years in
+          every direction. We catalogued a few of the stranger places.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 flex items-center justify-center gap-6 font-mono text-xs uppercase tracking-wider text-muted"
+        >
+          <span aria-hidden="true" className="h-px w-12 bg-white/20" />
+          <span>Scroll to navigate</span>
+          <span aria-hidden="true" className="h-px w-12 bg-white/20" />
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        style={{ y: subY }}
+        className="absolute inset-x-0 bottom-12 flex justify-center"
+        aria-hidden="true"
+      >
+        <div className="flex h-12 w-7 items-start justify-center rounded-full border border-white/20 p-1.5">
+          <motion.span
+            initial={{ y: 0 }}
+            animate={{ y: 14 }}
+            transition={{
+              duration: 1.6,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+            className="h-1.5 w-1.5 rounded-full bg-fg"
+          />
+        </div>
+      </motion.div>
     </section>
   );
 }

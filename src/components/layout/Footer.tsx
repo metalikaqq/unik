@@ -1,33 +1,19 @@
-import { getTranslations } from "next-intl/server";
-
-const SOCIAL_LINKS = [
-  { key: "twitter", href: "https://x.com/" },
-  { key: "github", href: "https://github.com/" },
-  { key: "email", href: "mailto:hello@carpathian.conf" },
-] as const;
-
-export async function Footer() {
-  const t = await getTranslations("common.footer");
-
+export function Footer() {
   return (
-    <footer className="border-t border-fg/15">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-mono uppercase tracking-wider text-muted">{t("copyright")}</p>
-        <p className="font-mono uppercase tracking-wider text-muted">{t("tagline")}</p>
-        <ul className="flex items-center gap-4 font-mono uppercase tracking-wider">
-          {SOCIAL_LINKS.map((link) => (
-            <li key={link.key}>
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted transition-colors hover:text-fg focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                {t(`social.${link.key}`)}
-              </a>
-            </li>
-          ))}
-        </ul>
+    <footer className="relative z-10 border-t border-white/5 bg-bg/40 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 text-sm text-muted sm:px-10 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="font-display text-2xl text-fg">We are made of starstuff.</p>
+          <p className="mt-2 max-w-md text-sm">
+            — Carl Sagan. Imagery from NASA, ESA, Hubble, JWST, and ESO. Public-domain contributions
+            to humanity.
+          </p>
+        </div>
+        <div className="space-y-1 font-mono text-xs uppercase tracking-wider">
+          <p>Cosmos / Atlas</p>
+          <p className="text-dim">An exploration of the observable universe.</p>
+          <p className="text-dim">{new Date().getFullYear()}</p>
+        </div>
       </div>
     </footer>
   );

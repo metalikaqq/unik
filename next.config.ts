@@ -1,10 +1,19 @@
-import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
-
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "images-assets.nasa.gov" },
+      { protocol: "https", hostname: "science.nasa.gov" },
+      { protocol: "https", hostname: "stsci-opo.org" },
+      { protocol: "https", hostname: "esahubble.org" },
+      { protocol: "https", hostname: "cdn.esawebb.org" },
+    ],
+  },
+  experimental: {
+    optimizePackageImports: ["framer-motion", "@react-three/drei"],
+  },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;
