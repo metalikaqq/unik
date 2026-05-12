@@ -66,7 +66,7 @@
         "Verify in browser at /uk and /en"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Mock data lives under src/content/ — these become the source-of-truth for /speakers and /tickets later. Reuse the speaker data on /speakers page (US-004).",
       "securityRelevant": false,
       "e2eRequired": false

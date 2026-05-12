@@ -22,5 +22,10 @@
     "ukShort": "UA",
     "enShort": "EN"
   },
-  "skipLink": "Skip to main content"
+  "skipLink": "Skip to main content",
+  "tracks": {
+    "design": "Design",
+    "engineering": "Engineering",
+    "community": "Community"
+  }
 }

@@ -191,16 +191,39 @@
       "buildStatus": "PASS",
       "timestamp": "2026-05-12T12:33:00Z",
       "phase": "diploma-frontend"
+    },
+    {
+      "iteration": 11,
+      "storyId": "US-003",
+      "tier": 1,
+      "testsRun": 116,
+      "testsPassed": 116,
+      "newTests": 27,
+      "coverage": {
+        "statements": 92.38,
+        "branches": 84.84,
+        "functions": 87.5,
+        "lines": 91.01,
+        "scope": "src/lib/ + src/hooks/ + src/i18n/ + src/content/ (speakers, sponsors, types — schemas + data Zod-validated at module load)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "regressionFixed": "Initial pass under threshold (branches 78.78%); added pickLocale + bilingualSchema/trackSchema tests, recovered to 84.84%.",
+      "timestamp": "2026-05-12T12:45:00Z",
+      "phase": "diploma-frontend"
     }
   ],
   "summary": {
-    "storiesComplete": 2,
+    "storiesComplete": 3,
     "storiesTotal": 8,
     "currentPhase": "diploma-frontend",
     "previousPhases": ["phase-01-design-system"],
-    "avgCoverage": 89.74,
-    "regressionsFound": 1,
-    "regressionsFixed": 1,
+    "avgCoverage": 91.01,
+    "regressionsFound": 2,
+    "regressionsFixed": 2,
     "qualityScore": null,
     "phaseHistory": {
       "phase-01-design-system": {

@@ -22,5 +22,10 @@
     "ukShort": "UA",
     "enShort": "EN"
   },
-  "skipLink": "Перейти до основного контенту"
+  "skipLink": "Перейти до основного контенту",
+  "tracks": {
+    "design": "Дизайн",
+    "engineering": "Інженерія",
+    "community": "Спільнота"
+  }
 }

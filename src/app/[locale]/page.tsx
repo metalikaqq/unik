@@ -3,6 +3,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CfpForm } from "@/components/home/CfpForm";
 import { Hero } from "@/components/home/Hero";
 import { HomeMarquee } from "@/components/home/HomeMarquee";
+import { SpeakerPreview } from "@/components/home/SpeakerPreview";
+import { SponsorStrip } from "@/components/home/SponsorStrip";
+import { WhatToExpect } from "@/components/home/WhatToExpect";
 import { Rule } from "@/components/ui/Rule";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -15,6 +18,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Hero />
       <Rule />
       <HomeMarquee />
+      <Rule />
+      <SpeakerPreview locale={locale} />
+      <Rule />
+      <WhatToExpect />
+      <Rule />
+      <SponsorStrip />
       <Rule />
       <section
         id="cfp"

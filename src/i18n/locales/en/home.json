@@ -69,5 +69,37 @@
         "required": "Choose a track"
       }
     }
+  },
+  "speakerPreview": {
+    "eyebrow": "Speakers / 2026",
+    "title": "Six faces of the programme",
+    "intro": "The first confirmed names. The full line-up lives on the speakers page.",
+    "allCta": "All speakers →"
+  },
+  "sponsorStrip": {
+    "eyebrow": "Partners",
+    "title": "Thanks to those standing with us",
+    "intro": "Independent studios, co-ops, and small publishers who make this conference possible."
+  },
+  "whatToExpect": {
+    "eyebrow": "What to expect",
+    "title": "Three days, three tracks, one valley",
+    "columns": {
+      "tracks": {
+        "tag": "Tracks",
+        "title": "Design, Engineering, Community",
+        "body": "Three parallel tracks in three rooms. Each day has its own theme and its own register."
+      },
+      "format": {
+        "tag": "Format",
+        "title": "Short talks, long conversations",
+        "body": "30 minutes on stage, 90 minutes in the foyer. Fewer slides, more exchange."
+      },
+      "community": {
+        "tag": "Community",
+        "title": "Deliberately small",
+        "body": "350 attendees, shared meals, walks up to the polonyna. Everything built so people actually meet."
+      }
+    }
   }
 }
