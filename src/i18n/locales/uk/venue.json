@@ -1,0 +1,23 @@
+{
+  "page": {
+    "eyebrow": "Локація",
+    "intro": "Конференція відбудеться в Ужгороді — найзахіднішому обласному центрі України."
+  },
+  "facts": {
+    "address": "Адреса",
+    "coords": "Координати",
+    "capacity": "Місткість",
+    "amenities": "Зручності",
+    "openInMaps": "Відкрити в Google Maps →"
+  },
+  "gallery": {
+    "title": "Галерея",
+    "openLabel": "Збільшити: {caption}"
+  },
+  "gettingThere": {
+    "title": "Як дістатися"
+  },
+  "sheet": {
+    "close": "Закрити"
+  }
+}

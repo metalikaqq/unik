@@ -281,10 +281,32 @@
       "buildStatus": "PASS",
       "timestamp": "2026-05-12T12:57:00Z",
       "phase": "diploma-frontend"
+    },
+    {
+      "iteration": 15,
+      "storyId": "US-007",
+      "tier": 1,
+      "testsRun": 152,
+      "testsPassed": 152,
+      "newTests": 7,
+      "coverage": {
+        "statements": 91.3,
+        "branches": 86.48,
+        "functions": 81.81,
+        "lines": 89.91,
+        "scope": "src/lib/ + src/hooks/ + src/i18n/ + src/content/ (venue schema with photo + transport entries)"
+      },
+      "typeErrors": 0,
+      "lintErrors": 0,
+      "secretsFound": 0,
+      "healthCheck": "PASS",
+      "buildStatus": "PASS",
+      "timestamp": "2026-05-12T13:01:00Z",
+      "phase": "diploma-frontend"
     }
   ],
   "summary": {
-    "storiesComplete": 6,
+    "storiesComplete": 7,
     "storiesTotal": 8,
     "currentPhase": "diploma-frontend",
     "previousPhases": ["phase-01-design-system"],

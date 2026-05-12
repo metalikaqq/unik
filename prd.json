@@ -154,7 +154,7 @@
         "Verify in browser at /uk/venue and /en/venue"
       ],
       "priority": 7,
-      "passes": false,
+      "passes": true,
       "notes": "Diploma demonstrates 'lightbox gallery + dl semantics + external links' (Ch.1 information clarity, Ch.2). Skip embedded map — saves bundle + avoids Google Maps API key.",
       "securityRelevant": false,
       "e2eRequired": false
